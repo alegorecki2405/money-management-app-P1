@@ -18,13 +18,16 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     private RoleRepository roleRepository;
     private PasswordEncoder passwordEncoder;
+    private ExpenseService expenseService;
 
     public UserServiceImpl(UserRepository userRepository,
                            RoleRepository roleRepository,
-                           PasswordEncoder passwordEncoder) {
+                           PasswordEncoder passwordEncoder,
+                           ExpenseService expenseService) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
+        this.expenseService = expenseService;
     }
 
     @Override
@@ -35,7 +38,7 @@ public class UserServiceImpl implements UserService {
         // encrypt the password using spring security
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
-        Role role = roleRepository.findByName("ROLE_USER");
+        Role role = roleRepository.findByName("ROLE_ADMIN");
         if(role == null){
             role = checkRoleExist();
         }
@@ -49,10 +52,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserDto findUserByEmailToDto(String email) {
+        return mapToUserDto(findUserByEmail(email));
+    }
+
+    @Override
     public List<UserDto> findAllUsers() {
         List<User> users = userRepository.findAll();
         return users.stream()
-                .map((user) -> mapToUserDto(user))
+                .map(this::mapToUserDto)
                 .collect(Collectors.toList());
     }
 
@@ -62,6 +70,7 @@ public class UserServiceImpl implements UserService {
         userDto.setFirstName(str[0]);
         userDto.setLastName(str[1]);
         userDto.setEmail(user.getEmail());
+        userDto.setExpenses(expenseService.findAllByUser(user));
         return userDto;
     }
 
@@ -70,6 +79,5 @@ public class UserServiceImpl implements UserService {
         role.setName("ROLE_USER");
         return roleRepository.save(role);
     }
-
 
 }
