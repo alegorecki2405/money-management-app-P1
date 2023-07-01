@@ -16,9 +16,9 @@ import java.util.List;
 public class UserDto
 {
     private Long id;
-    @NotEmpty
+    @NotEmpty(message = "First Name should not be empty")
     private String firstName;
-    @NotEmpty
+    @NotEmpty(message = "Last Name should not be empty")
     private String lastName;
     @NotEmpty(message = "Email should not be empty")
     @Email
