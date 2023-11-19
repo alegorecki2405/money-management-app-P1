@@ -53,6 +53,7 @@ public class ExpenseController {
         UserDto userDto = userService.findUserByEmailToDto(authenticationFacade.getAuth().getName());
         List<ExpenseDto> expenseDtoList = userDto.getExpenses();
         model.addAttribute("expenses", expenseDtoList);
+        model.addAttribute("dupa", "dupcia");
         return "expenses";
     }
 }
