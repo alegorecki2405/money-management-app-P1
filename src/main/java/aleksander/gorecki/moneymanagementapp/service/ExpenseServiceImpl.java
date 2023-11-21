@@ -1,6 +1,7 @@
 package aleksander.gorecki.moneymanagementapp.service;
 
 import aleksander.gorecki.moneymanagementapp.dto.ExpenseDto;
+import aleksander.gorecki.moneymanagementapp.dto.ExpenseType;
 import aleksander.gorecki.moneymanagementapp.entity.Expense;
 import aleksander.gorecki.moneymanagementapp.entity.User;
 import aleksander.gorecki.moneymanagementapp.repository.ExpenseRepository;
@@ -30,7 +31,7 @@ public class ExpenseServiceImpl implements ExpenseService{
         Expense expense = new Expense(expenseDto.getId(),
                 expenseDto.getName(),
                 expenseDto.getAmount(),
-                expenseDto.getType(),
+                expenseDto.getType().name(),
                 user);
         return expenseRepository.save(expense);
     }
@@ -40,7 +41,7 @@ public class ExpenseServiceImpl implements ExpenseService{
         expenseDto.setId(expense.getId());
         expenseDto.setName(expense.getName());
         expenseDto.setAmount(expense.getAmount());
-        expenseDto.setType(expense.getType());
+        expenseDto.setType(ExpenseType.valueOf(expense.getType()));
         return expenseDto;
     }
 }

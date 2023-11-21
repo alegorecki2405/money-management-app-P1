@@ -90,15 +90,18 @@
 
                     <div class="form-group mb-3">
                         <label class="form-label">Type</label>
-                        <input
+                        <select
                                 class="form-control"
                                 id="type"
                                 name="type"
-                                placeholder="Enter type address"
                                 th:field="*{type}"
-                                type="type"
-                                min="0.01"
-                        />
+                        >
+                            <option value="FOOD">FOOD</option>
+                            <option value="ENTERTAINMENT">ENTERTAINMENT</option>
+                            <option value="BILLS">BILLS</option>
+                            <option value="SUBSCRIPTIONS">SUBSCRIPTIONS</option>
+                            <option value="OTHER">OTHER</option>
+                        </select>
                         <p th:errors = "*{type}" class="text-danger"
                            th:if="${#fields.hasErrors('type')}"></p>
                     </div>
