@@ -96,11 +96,8 @@
                                 name="type"
                                 th:field="*{type}"
                         >
-                            <option value="FOOD">FOOD</option>
-                            <option value="ENTERTAINMENT">ENTERTAINMENT</option>
-                            <option value="BILLS">BILLS</option>
-                            <option value="SUBSCRIPTIONS">SUBSCRIPTIONS</option>
-                            <option value="OTHER">OTHER</option>
+                            <option th:each="expenseType : ${T(aleksander.gorecki.moneymanagementapp.dto.ExpenseType).values()}"
+                            th:value="${expenseType}" th:text="${expenseType}"></option>
                         </select>
                         <p th:errors = "*{type}" class="text-danger"
                            th:if="${#fields.hasErrors('type')}"></p>
