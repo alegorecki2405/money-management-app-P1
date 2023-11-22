@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -30,7 +31,12 @@ public class Expense {
     @Column(nullable = false)
     private String type;
 
+    @Column(nullable = false)
+    private Date date;
+
     @ManyToOne
     @JoinColumn(name = "user_id",nullable = false)
     private User user;
+
+
 }

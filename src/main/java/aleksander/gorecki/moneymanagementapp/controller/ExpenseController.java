@@ -50,9 +50,9 @@ public class ExpenseController {
 
     @GetMapping("/expenses")
     public String expenses(Model model){
-        UserDto userDto = userService.findUserByEmailToDto(authenticationFacade.getAuth().getName());
-        List<ExpenseDto> expenseDtoList = userDto.getExpenses();
-        model.addAttribute("expenses", expenseDtoList);
+        User user = userService.findUserByEmail(authenticationFacade.getAuth().getName());
+        model.addAttribute("futureExpenses", expenseService.findAllFutureExpensesByUser(user));
+        model.addAttribute("previousExpenses", expenseService.findAllPreviousExpensesByUser(user));
         return "expenses";
     }
 }

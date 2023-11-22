@@ -1,5 +1,6 @@
 package aleksander.gorecki.moneymanagementapp.service;
 
+import aleksander.gorecki.moneymanagementapp.dto.ExpenseDto;
 import aleksander.gorecki.moneymanagementapp.dto.UserDto;
 import aleksander.gorecki.moneymanagementapp.entity.Role;
 import aleksander.gorecki.moneymanagementapp.entity.User;
@@ -50,6 +51,7 @@ public class UserServiceImpl implements UserService {
     public UserDto findUserByEmailToDto(String email) {
         return mapToUserDto(findUserByEmail(email));
     }
+
 
     @Override
     public List<UserDto> findAllUsers() {

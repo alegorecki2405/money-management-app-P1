@@ -10,8 +10,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -27,4 +29,6 @@ public class ExpenseDto {
     @NotNull(message = "Type should not be null")
     @Enumerated(EnumType.STRING)
     private ExpenseType type;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date date;
 }
