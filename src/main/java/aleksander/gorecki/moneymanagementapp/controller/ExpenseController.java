@@ -2,7 +2,6 @@ package aleksander.gorecki.moneymanagementapp.controller;
 
 import aleksander.gorecki.moneymanagementapp.config.AuthenticationFacade;
 import aleksander.gorecki.moneymanagementapp.dto.ExpenseDto;
-import aleksander.gorecki.moneymanagementapp.dto.UserDto;
 import aleksander.gorecki.moneymanagementapp.entity.User;
 import aleksander.gorecki.moneymanagementapp.service.ExpenseService;
 import aleksander.gorecki.moneymanagementapp.service.UserService;
@@ -13,8 +12,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-
-import java.util.List;
 
 @Controller
 public class ExpenseController {
