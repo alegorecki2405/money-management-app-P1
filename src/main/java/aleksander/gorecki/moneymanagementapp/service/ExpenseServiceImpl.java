@@ -6,15 +6,16 @@ import aleksander.gorecki.moneymanagementapp.entity.Expense;
 import aleksander.gorecki.moneymanagementapp.entity.User;
 import aleksander.gorecki.moneymanagementapp.repository.ExpenseRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class ExpenseServiceImpl implements ExpenseService{
+public class ExpenseServiceImpl implements ExpenseService {
 
-    private ExpenseRepository expenseRepository;
+    private final ExpenseRepository expenseRepository;
 
     public ExpenseServiceImpl(ExpenseRepository expenseRepository) {
         this.expenseRepository = expenseRepository;
@@ -23,43 +24,47 @@ public class ExpenseServiceImpl implements ExpenseService{
     @Override
     public List<ExpenseDto> findAllByUser(User user) {
         List<Expense> expenses = expenseRepository.findAllByUser(user);
+        return mapToExpenseDtoList(expenses);
+    }
+
+    @Override
+    public List<ExpenseDto> findAllFutureExpensesByUser(User user) {
+        return filterExpensesByDate(findAllByUser(user), new Date(), true);
+    }
+
+    @Override
+    public List<ExpenseDto> findAllPreviousExpensesByUser(User user) {
+        return filterExpensesByDate(findAllByUser(user), new Date(), false);
+    }
+
+    @Override
+    @Transactional
+    public Expense create(User user, ExpenseDto expenseDto) {
+        Date date = expenseDto.getDate() != null ? expenseDto.getDate() : new Date();
+        Expense expense = new Expense(
+                expenseDto.getId(),
+                expenseDto.getName(),
+                expenseDto.getAmount(),
+                expenseDto.getType().name(),
+                date,
+                user
+        );
+        return expenseRepository.save(expense);
+    }
+
+    private List<ExpenseDto> mapToExpenseDtoList(List<Expense> expenses) {
         return expenses.stream()
                 .map(this::mapToExpenseDto)
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public List<ExpenseDto> findAllFutureExpensesByUser(User user) {
-        return findAllByUser(user)
-                .stream()
-                .filter(expenseDto -> expenseDto.getDate().after(new Date()))
+    private List<ExpenseDto> filterExpensesByDate(List<ExpenseDto> expenses, Date compareDate, boolean future) {
+        return expenses.stream()
+                .filter(expense -> future ? expense.getDate().after(compareDate) : expense.getDate().before(compareDate))
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public List<ExpenseDto> findAllPreviousExpensesByUser(User user) {
-        return findAllByUser(user)
-                .stream()
-                .filter(expenseDto -> expenseDto.getDate().before(new Date()))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public Expense create(User user, ExpenseDto expenseDto) {
-        Date date = new Date();
-        if(expenseDto.getDate() != null) {
-            date = expenseDto.getDate();
-        }
-        Expense expense = new Expense(expenseDto.getId(),
-                expenseDto.getName(),
-                expenseDto.getAmount(),
-                expenseDto.getType().name(),
-                date,
-                user);
-        return expenseRepository.save(expense);
-    }
-
-    private ExpenseDto mapToExpenseDto(Expense expense){
+    private ExpenseDto mapToExpenseDto(Expense expense) {
         ExpenseDto expenseDto = new ExpenseDto();
         expenseDto.setId(expense.getId());
         expenseDto.setName(expense.getName());
@@ -69,3 +74,4 @@ public class ExpenseServiceImpl implements ExpenseService{
         return expenseDto;
     }
 }
+

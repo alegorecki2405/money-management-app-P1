@@ -8,18 +8,20 @@ import aleksander.gorecki.moneymanagementapp.repository.RoleRepository;
 import aleksander.gorecki.moneymanagementapp.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
 
-    private UserRepository userRepository;
-    private RoleRepository roleRepository;
-    private PasswordEncoder passwordEncoder;
-    private ExpenseService expenseService;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final ExpenseService expenseService;
 
     public UserServiceImpl(UserRepository userRepository,
                            RoleRepository roleRepository,
@@ -32,13 +34,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void saveUser(UserDto userDto) {
-        User user = new User();
-        user.setName(userDto.getFirstName() + " " + userDto.getLastName());
-        user.setEmail(userDto.getEmail());
-        // encrypt the password using spring security
-        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
-        user.setRoles(List.of(getRole()));
+        User user = createUserFromDto(userDto);
         userRepository.save(user);
     }
 
@@ -49,9 +47,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto findUserByEmailToDto(String email) {
-        return mapToUserDto(findUserByEmail(email));
+        User user = findUserByEmail(email);
+        return mapToUserDto(user);
     }
-
 
     @Override
     public List<UserDto> findAllUsers() {
@@ -61,7 +59,16 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList());
     }
 
-    private UserDto mapToUserDto(User user){
+    private User createUserFromDto(UserDto userDto) {
+        User user = new User();
+        user.setName(userDto.getFirstName() + " " + userDto.getLastName());
+        user.setEmail(userDto.getEmail());
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        user.setRoles(Collections.singletonList(getRole()));
+        return user;
+    }
+
+    private UserDto mapToUserDto(User user) {
         UserDto userDto = new UserDto();
         String[] str = user.getName().split(" ");
         userDto.setFirstName(str[0]);
@@ -71,15 +78,14 @@ public class UserServiceImpl implements UserService {
         return userDto;
     }
 
-    private Role getRole(){
-//        UNCOMMENT OR COMMENT DEPENDING ON WHAT ROLE YOU WANT TO CREATE
-//
-        Role role = new Role();
-        role.setName("ROLE_USER");
-        return roleRepository.save(role);
-//        Role role = new Role();
-//        role.setName("ROLE_ADMIN");
-//        return roleRepository.save(role);
+    private Role getRole() {
+        if (roleRepository.findByName("ROLE_USER") == null) {
+            Role role = new Role();
+            role.setName("ROLE_USER");
+            return roleRepository.save(role);
+        } else {
+            return roleRepository.findByName("ROLE_USER");
+        }
     }
-
 }
+

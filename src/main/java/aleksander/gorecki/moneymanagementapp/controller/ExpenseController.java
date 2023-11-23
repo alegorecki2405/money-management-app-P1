@@ -12,12 +12,13 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class ExpenseController {
-    private ExpenseService expenseService;
-    private UserService userService;
-    private AuthenticationFacade authenticationFacade;
+    private final ExpenseService expenseService;
+    private final UserService userService;
+    private final AuthenticationFacade authenticationFacade;
 
     public ExpenseController(ExpenseService expenseService, UserService userService, AuthenticationFacade authenticationFacade) {
         this.expenseService = expenseService;
@@ -27,26 +28,26 @@ public class ExpenseController {
 
     @GetMapping("/expense")
     public String createExpenseForm(Model model) {
-        ExpenseDto expenseDto = new ExpenseDto();
-        model.addAttribute("expense", expenseDto);
+        model.addAttribute("expense", new ExpenseDto());
         return "expense";
     }
 
     @PostMapping("/expense/save")
     public String createExpense(@Valid @ModelAttribute("expense") ExpenseDto expenseDto,
-                                 BindingResult result,
-                                 Model model) {
-        User user = userService.findUserByEmail(authenticationFacade.getAuth().getName());
+                                BindingResult result,
+                                RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
-            model.addAttribute("expense",expenseDto);
-            return "/expense";
+            return "expense";
         }
-        expenseService.create(user,expenseDto);
-        return "redirect:/expense?success";
+
+        User user = userService.findUserByEmail(authenticationFacade.getAuth().getName());
+        expenseService.create(user, expenseDto);
+        redirectAttributes.addFlashAttribute("successMessage", "Expense added successfully");
+        return "redirect:/expense";
     }
 
     @GetMapping("/expenses")
-    public String expenses(Model model){
+    public String expenses(Model model) {
         User user = userService.findUserByEmail(authenticationFacade.getAuth().getName());
         model.addAttribute("futureExpenses", expenseService.findAllFutureExpensesByUser(user));
         model.addAttribute("previousExpenses", expenseService.findAllPreviousExpensesByUser(user));

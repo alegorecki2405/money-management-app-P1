@@ -14,3 +14,4 @@ public interface UserService {
 
     List<UserDto> findAllUsers();
 }
+
