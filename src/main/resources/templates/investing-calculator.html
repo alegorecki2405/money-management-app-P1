@@ -10,7 +10,6 @@
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
           crossorigin="anonymous">
 </head>
-<body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
         <a class="navbar-brand" th:href="@{/index}">Money Management App</a>
@@ -39,70 +38,87 @@
                     <a class="nav-link active" aria-current="page" th:href="@{/expense}">Add Expense</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" th:href="@{/investing-calculator}">Investing Calculator</a>
+                    <a class="nav-link active" aria-current="page" th:href="@{/investing-calculator}">Investing
+                        Calculator</a>
                 </li>
             </ul>
         </div>
     </div>
 </nav>
+<br/><br/><br/>
 <div class="container">
-    <h1>Investment Return Calculator</h1>
+    <div class="row col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="text-center">Investment Return Calculator</h2>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="initialAmount" class="form-label">Initial Amount:</label>
+                    <input type="number" class="form-control" id="initialAmount" placeholder="Enter initial amount">
+                </div>
+                <div class="mb-3">
+                    <label for="contributionType" class="form-label">Contribution Type:</label>
+                    <select id="contributionType" class="form-select">
+                        <option value="monthly">Monthly</option>
+                        <option value="yearly">Yearly</option>
+                    </select>
+                </div>
 
-    <label for="initialAmount">Initial Amount:</label>
-    <input type="number" id="initialAmount" placeholder="Enter initial amount"><br><br>
+                <div class="mb-3">
+                    <label for="contributionAmount" class="form-label">Contribution Amount:</label>
+                    <input type="number" class="form-control" id="contributionAmount"
+                           placeholder="Enter contribution amount">
+                </div>
 
-    <label for="contributionType">Contribution Type:</label>
-    <select id="contributionType">
-        <option value="monthly">Monthly</option>
-        <option value="yearly">Yearly</option>
-    </select><br><br>
+                <div class="mb-3">
+                    <label for="numberOfYears" class="form-label">Number of Years:</label>
+                    <input type="number" class="form-control" id="numberOfYears" placeholder="Enter number of years">
+                </div>
 
-    <label for="contributionAmount">Contribution Amount:</label>
-    <input type="number" id="contributionAmount" placeholder="Enter contribution amount"><br><br>
-
-    <label for="numberOfYears">Number of Years:</label>
-    <input type="number" id="numberOfYears" placeholder="Enter number of years"><br><br>
-
-    <label for="annualReturn">Annual Return (%):</label>
-    <input type="number" id="annualReturn" placeholder="Enter annual return"><br><br>
-
-    <button onclick="calculateReturn()">Calculate</button><br><br>
-
-    <h2>Investment Return:</h2>
-    <p id="result"></p>
-
-
-    <script>
-        function calculateReturn() {
-            const initialAmount = parseFloat(document.getElementById('initialAmount').value);
-            const contributionType = document.getElementById('contributionType').value;
-            const contributionAmount = parseFloat(document.getElementById('contributionAmount').value);
-            const numberOfYears = parseInt(document.getElementById('numberOfYears').value);
-            const annualReturn = parseFloat(document.getElementById('annualReturn').value) / 100;
-
-
-            let total = initialAmount;
-            let amountAdded = initialAmount;
-            let months = 0;
-            if (contributionType === 'monthly') {
-                months = numberOfYears * 12;
-                for (let i = 0; i < months; i++) {
-                    total *= 1 + annualReturn / 12;
-                    total += contributionAmount;
-                    amountAdded += contributionAmount;
-                }
-            } else if (contributionType === 'yearly') {
-                months = numberOfYears;
-                for (let i = 0; i < months; i++) {
-                    total *= 1 + annualReturn;
-                    total += contributionAmount;
-                    amountAdded += contributionAmount;
-                }
-            }
-
-            document.getElementById('result').innerText = `Total return after ${numberOfYears} years: ${total.toFixed(2)} the amount of money added ${amountAdded}`;
-        }
-    </script>
+                <div class="mb-3">
+                    <label for="annualReturn" class="form-label">Annual Return (%):</label>
+                    <input type="number" class="form-control" id="annualReturn" placeholder="Enter annual return">
+                </div>
+                <button onclick="calculateReturn()" class="btn btn-primary">Calculate</button>
+                <br><br>
+                <h4 id="result">Investment Return:</h4>
+            </div>
+        </div>
+    </div>
 </div>
+
+
+<script>
+    function calculateReturn() {
+        const initialAmount = parseFloat(document.getElementById('initialAmount').value);
+        const contributionType = document.getElementById('contributionType').value;
+        const contributionAmount = parseFloat(document.getElementById('contributionAmount').value);
+        const numberOfYears = parseInt(document.getElementById('numberOfYears').value);
+        const annualReturn = parseFloat(document.getElementById('annualReturn').value) / 100;
+
+
+        let total = initialAmount;
+        let amountAdded = initialAmount;
+        let months = 0;
+        if (contributionType === 'monthly') {
+            months = numberOfYears * 12;
+            for (let i = 0; i < months; i++) {
+                total *= 1 + annualReturn / 12;
+                total += contributionAmount;
+                amountAdded += contributionAmount;
+            }
+        } else if (contributionType === 'yearly') {
+            months = numberOfYears;
+            for (let i = 0; i < months; i++) {
+                total *= 1 + annualReturn;
+                total += contributionAmount;
+                amountAdded += contributionAmount;
+            }
+        }
+
+        document.getElementById('result').innerText = `Investment Return: Total return after ${numberOfYears} years: ${total.toFixed(2)} the amount of money added ${amountAdded}`;
+    }
+</script>
 </body>
 </html>
