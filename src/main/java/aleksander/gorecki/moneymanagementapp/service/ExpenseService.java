@@ -14,5 +14,9 @@ public interface ExpenseService {
     List<ExpenseDto> findAllPreviousExpensesByUser(User user);
 
     Expense create(User user, ExpenseDto expenseDto);
+
+    void saveOrUpdate(Expense expense);
+
+    Expense findById(Long expenseId);
 }
 

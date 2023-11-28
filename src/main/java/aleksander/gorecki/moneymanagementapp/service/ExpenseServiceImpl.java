@@ -52,6 +52,16 @@ public class ExpenseServiceImpl implements ExpenseService {
         return expenseRepository.save(expense);
     }
 
+    @Override
+    public void saveOrUpdate(Expense expense) {
+        expenseRepository.save(expense);
+    }
+
+    @Override
+    public Expense findById(Long expenseId) {
+        return expenseRepository.findById(expenseId).orElse(null);
+    }
+
     private List<ExpenseDto> mapToExpenseDtoList(List<Expense> expenses) {
         return expenses.stream()
                 .map(this::mapToExpenseDto)
