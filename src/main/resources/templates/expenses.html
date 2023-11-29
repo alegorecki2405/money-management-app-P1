@@ -111,7 +111,7 @@
             <td th:text="${expense.type}"></td>
             <td th:text="${#dates.format(expense.date, 'dd-MM-yyyy')}"></td>
             <td>
-                <button class="btn btn-primary" onclick="payExpense([[${expense.id}]])">Pay</button>
+                <button class="btn btn-primary" th:onclick="payExpense([[${expense.id}]])">Pay</button>
             </td>
         </tr>
         </tbody>
@@ -143,16 +143,13 @@
     </table>
 </div>
 <script th:inline="javascript">
-    // Function to update expense date when "Pay" button is clicked
     function payExpense(expenseId) {
-        // AJAX call to update expense date
         fetch('/update-expense-date/' + expenseId, {
             method: 'PUT'
         })
             .then(response => {
                 if (response.ok) {
-                    // Reload the page or update the table with the updated data
-                    location.reload(); // Reload the page for demonstration purposes
+                    location.reload();
                 } else {
                     console.error('Failed to update expense date');
                 }
@@ -162,5 +159,6 @@
             });
     }
 </script>
+
 </body>
 </html>

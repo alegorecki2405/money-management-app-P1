@@ -33,7 +33,7 @@ public class SpringSecurity {
                 .authorizeHttpRequests((authorize) ->
                         authorize.requestMatchers("/register/**","/index","/investing-calculator").permitAll()
                                 .requestMatchers("/admin/users").hasAnyRole("ADMIN")
-                                .requestMatchers("/expenses/**","/expense/**").hasAnyRole("USER","ADMIN")
+                                .requestMatchers("/expenses/**","/expense/**","/update-expense-date/**").hasAnyRole("USER","ADMIN")
                 ).formLogin(
                         form -> form
                                 .loginPage("/login")
