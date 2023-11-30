@@ -1,6 +1,5 @@
 package aleksander.gorecki.moneymanagementapp.service;
 
-import aleksander.gorecki.moneymanagementapp.dto.ExpenseDto;
 import aleksander.gorecki.moneymanagementapp.dto.UserDto;
 import aleksander.gorecki.moneymanagementapp.entity.Role;
 import aleksander.gorecki.moneymanagementapp.entity.User;
@@ -10,7 +9,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,16 +19,13 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
-    private final ExpenseService expenseService;
 
     public UserServiceImpl(UserRepository userRepository,
                            RoleRepository roleRepository,
-                           PasswordEncoder passwordEncoder,
-                           ExpenseService expenseService) {
+                           PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
-        this.expenseService = expenseService;
     }
 
     @Override
@@ -46,17 +41,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto findUserByEmailToDto(String email) {
-        User user = findUserByEmail(email);
-        return mapToUserDto(user);
-    }
-
-    @Override
     public List<UserDto> findAllUsers() {
         List<User> users = userRepository.findAll();
         return users.stream()
                 .map(this::mapToUserDto)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public void delete(User user) {
+        userRepository.delete(user);
     }
 
     private User createUserFromDto(UserDto userDto) {
@@ -74,7 +68,6 @@ public class UserServiceImpl implements UserService {
         userDto.setFirstName(str[0]);
         userDto.setLastName(str[1]);
         userDto.setEmail(user.getEmail());
-        userDto.setExpenses(expenseService.findAllByUser(user));
         return userDto;
     }
 

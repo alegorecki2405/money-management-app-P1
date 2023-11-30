@@ -32,8 +32,8 @@ public class SpringSecurity {
         http.csrf().disable()
                 .authorizeHttpRequests((authorize) ->
                         authorize.requestMatchers("/register/**","/index","/investing-calculator").permitAll()
-                                .requestMatchers("/admin/users").hasAnyRole("ADMIN")
-                                .requestMatchers("/expenses/**","/expense/**","/update-expense-date/**").hasAnyRole("USER","ADMIN")
+                                .requestMatchers("/admin/users","/admin/delete/**").hasAnyRole("ADMIN")
+                                .requestMatchers("/expenses/**","/expense/**","/update-expense-date/**").hasAnyRole("USER")
                 ).formLogin(
                         form -> form
                                 .loginPage("/login")
