@@ -1,15 +1,23 @@
 <!DOCTYPE html>
-<html lang="en"
-      xmlns:th="http://www.thymeleaf.org"
->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Money Management App</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
-          rel="stylesheet"
-          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
-          crossorigin="anonymous">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Money Management App</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+              rel="stylesheet"
+              crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.6.4.slim.min.js"
+                crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+                crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+                crossorigin="anonymous"></script>
+    </head>
 </head>
+<body>
+
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
         <a class="navbar-brand" th:href="@{/index}">Money Management App</a>
@@ -45,49 +53,54 @@
         </div>
     </div>
 </nav>
-<br/><br/><br/>
-<div class="container">
-    <div class="row col-md-8 offset-md-2">
-        <div class="card">
-            <div class="card-header">
-                <h2 class="text-center">Investment Return Calculator</h2>
-            </div>
-            <div class="card-body">
-                <div class="mb-3">
-                    <label for="initialAmount" class="form-label">Initial Amount:</label>
-                    <input type="number" class="form-control" id="initialAmount" placeholder="Enter initial amount">
-                </div>
-                <div class="mb-3">
-                    <label for="contributionType" class="form-label">Contribution Type:</label>
-                    <select id="contributionType" class="form-select">
-                        <option value="monthly">Monthly</option>
-                        <option value="yearly">Yearly</option>
-                    </select>
-                </div>
 
-                <div class="mb-3">
-                    <label for="contributionAmount" class="form-label">Contribution Amount:</label>
-                    <input type="number" class="form-control" id="contributionAmount"
-                           placeholder="Enter contribution amount">
+<div class="container mt-3">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="text-center">Investment Return Calculator</h2>
                 </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="initialAmount" class="form-label">Initial Amount:</label>
+                        <input type="number" class="form-control" id="initialAmount" placeholder="Enter initial amount">
+                    </div>
+                    <div class="mb-3">
+                        <label for="contributionType" class="form-label">Contribution Type:</label>
+                        <select id="contributionType" class="form-select">
+                            <option value="monthly">Monthly</option>
+                            <option value="yearly">Yearly</option>
+                        </select>
+                    </div>
 
-                <div class="mb-3">
-                    <label for="numberOfYears" class="form-label">Number of Years:</label>
-                    <input type="number" class="form-control" id="numberOfYears" placeholder="Enter number of years">
-                </div>
+                    <div class="mb-3">
+                        <label for="contributionAmount" class="form-label">Contribution Amount:</label>
+                        <input type="number" class="form-control" id="contributionAmount"
+                               placeholder="Enter contribution amount">
+                    </div>
 
-                <div class="mb-3">
-                    <label for="annualReturn" class="form-label">Annual Return (%):</label>
-                    <input type="number" class="form-control" id="annualReturn" placeholder="Enter annual return">
+                    <div class="mb-3">
+                        <label for="numberOfYears" class="form-label">Number of Years:</label>
+                        <input type="number" class="form-control" id="numberOfYears" placeholder="Enter number of years">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="annualReturn" class="form-label">Annual Return (%):</label>
+                        <input type="number" class="form-control" id="annualReturn" placeholder="Enter annual return">
+                    </div>
+                    <button onclick="calculateReturn()" class="btn btn-primary">Calculate</button>
+                    <br><br>
+                    <h4 id="result">Investment Return:</h4>
                 </div>
-                <button onclick="calculateReturn()" class="btn btn-primary">Calculate</button>
-                <br><br>
-                <h4 id="result">Investment Return:</h4>
             </div>
         </div>
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-yGBxCveA6nPqECoCegGpqu5i9Nf8VLy3UkTJh8t+zMJGgs6fi9QDpd3q22K1UpTi"
+        crossorigin="anonymous"></script>
 
 <script>
     function calculateReturn() {
@@ -96,7 +109,6 @@
         const contributionAmount = parseFloat(document.getElementById('contributionAmount').value);
         const numberOfYears = parseInt(document.getElementById('numberOfYears').value);
         const annualReturn = parseFloat(document.getElementById('annualReturn').value) / 100;
-
 
         let total = initialAmount;
         let amountAdded = initialAmount;
@@ -120,5 +132,6 @@
         document.getElementById('result').innerText = `Investment Return: Total return after ${numberOfYears} years: ${total.toFixed(2)} the amount of money added ${amountAdded}`;
     }
 </script>
+
 </body>
 </html>
