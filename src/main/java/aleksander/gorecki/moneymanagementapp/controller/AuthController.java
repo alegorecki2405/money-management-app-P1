@@ -1,5 +1,6 @@
 package aleksander.gorecki.moneymanagementapp.controller;
 
+import aleksander.gorecki.moneymanagementapp.config.AuthenticationFacade;
 import aleksander.gorecki.moneymanagementapp.dto.UserDto;
 import aleksander.gorecki.moneymanagementapp.entity.User;
 import aleksander.gorecki.moneymanagementapp.service.UserService;
@@ -16,21 +17,24 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 @RequestMapping("/")
 public class AuthController {
-
+    private final AuthenticationFacade authenticationFacade;
     private final UserService userService;
 
-    public AuthController(UserService userService) {
+    public AuthController(AuthenticationFacade authenticationFacade, UserService userService) {
+        this.authenticationFacade = authenticationFacade;
         this.userService = userService;
     }
 
     @GetMapping("/index")
-    public String showIndexPage() {
+    public String showIndexPage(Model model) {
+        model.addAttribute("userRole", authenticationFacade.getHighestRole());
         return "index";
     }
 
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
         model.addAttribute("user", new UserDto());
+        model.addAttribute("userRole", authenticationFacade.getHighestRole());
         return "register";
     }
 
@@ -54,7 +58,8 @@ public class AuthController {
     }
 
     @GetMapping("/login")
-    public String showLoginForm() {
+    public String showLoginForm(Model model) {
+        model.addAttribute("userRole", authenticationFacade.getHighestRole());
         return "login";
     }
 }

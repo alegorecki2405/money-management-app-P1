@@ -32,6 +32,7 @@ public class ExpenseController {
     @GetMapping("/expense")
     public String createExpenseForm(Model model) {
         model.addAttribute("expense", new ExpenseDto());
+        model.addAttribute("userRole", authenticationFacade.getHighestRole());
         return "expense";
     }
 
@@ -54,6 +55,7 @@ public class ExpenseController {
         User user = userService.findUserByEmail(authenticationFacade.getAuth().getName());
         model.addAttribute("futureExpenses", expenseService.findAllFutureExpensesByUser(user));
         model.addAttribute("previousExpenses", expenseService.findAllPreviousExpensesByUser(user));
+        model.addAttribute("userRole", authenticationFacade.getHighestRole());
         return "expenses";
     }
 

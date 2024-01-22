@@ -1,5 +1,6 @@
 package aleksander.gorecki.moneymanagementapp.controller;
 
+import aleksander.gorecki.moneymanagementapp.config.AuthenticationFacade;
 import aleksander.gorecki.moneymanagementapp.dto.UserDto;
 import aleksander.gorecki.moneymanagementapp.entity.User;
 import aleksander.gorecki.moneymanagementapp.service.UserService;
@@ -19,9 +20,11 @@ import java.util.List;
 @RequestMapping("/admin")
 public class AdminPanelController {
 
+    private final AuthenticationFacade authenticationFacade;
     private final UserService userService;
 
-    public AdminPanelController(UserService userService) {
+    public AdminPanelController(AuthenticationFacade authenticationFacade, UserService userService) {
+        this.authenticationFacade = authenticationFacade;
         this.userService = userService;
     }
 
@@ -29,6 +32,7 @@ public class AdminPanelController {
     public String getAllUsers(Model model){
         List<UserDto> users = userService.findAllUsers();
         model.addAttribute("users", users);
+        model.addAttribute("userRole", authenticationFacade.getHighestRole());
         return "users";
     }
 

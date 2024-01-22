@@ -10,4 +10,13 @@ public class AuthenticationFacadeImpl implements AuthenticationFacade {
     public Authentication getAuth() {
         return SecurityContextHolder.getContext().getAuthentication();
     }
+
+    @Override
+    public String getHighestRole() {
+        return SecurityContextHolder.getContext().getAuthentication().getAuthorities()
+                .stream()
+                .findFirst()
+                .map(Object::toString)
+                .orElse("ROLE_NONE");
+    }
 }
