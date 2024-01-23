@@ -58,6 +58,29 @@
             crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
             crossorigin="anonymous"></script>
+    <style>
+        @media only screen and (max-width: 600px) {
+            body {
+                font-size: 14px;
+            }
+
+            h2 {
+                font-size: 18px;
+            }
+
+            table {
+                font-size: 12px;
+            }
+            .form-column {
+                display: none;
+                order: 1;
+            }
+
+            .content-column {
+                order: 2;
+            }
+        }
+    </style>
 </head>
 <body>
 
@@ -89,18 +112,18 @@
                     <a class="nav-link active" aria-current="page" th:href="@{/expense}">Add Expense</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" th:href="@{/investing-calculator}">Investing Calculator</a>
+                    <a class="nav-link active" aria-current="page" th:href="@{/investing-calculator}">Investing
+                        Calculator</a>
                 </li>
             </ul>
         </div>
     </div>
 </nav>
 
-<div class="container mt-3">
+<div class="container-fluid">
     <div class="row">
-        <div class="col-md-8 offset-md-2">
+        <div class="d-inline col-md-8 content-column">
             <h2>Your Upcoming Expenses</h2>
-            <h1 th:text="${userRole}">ljd</h1>
             <table class="table table-bordered table-hover">
                 <thead class="table-dark">
                 <tr>
@@ -123,16 +146,10 @@
                 </tr>
                 </tbody>
             </table>
-        </div>
-    </div>
-</div>
 
-<div id="chartContainer" style="height: 300px; width: 100%;"></div>
-<script src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
+            <div class="col-md-8 offset-md-0" id="chartContainer" style="height: 300px; width: 100%;"></div>
+            <script src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
 
-<div class="container mt-3">
-    <div class="row">
-        <div class="col-md-8 offset-md-2">
             <h2>Your Expenses</h2>
             <table class="table table-bordered table-hover">
                 <thead class="table-dark">
@@ -153,6 +170,55 @@
                 </tbody>
             </table>
         </div>
+        <div class="d-inline col-md-4 offset-md-0 form-column">
+            <div class="card" id="formcard">
+                <div class="card-header">
+                    <h2 class="text-center">Filter Expenses</h2>
+                    <button type="button" class="btn btn-primary d-md-none" onclick="toggleFiltersForm()">Toggle Filters</button>
+                </div>
+                <div class="card-body">
+                    <form id="filterForm">
+                        <div class="row">
+                            <div class="col-md-12 mb-2">
+                                <label for="typeFilter">Type:</label>
+                                <input type="text" id="typeFilter" name="typeFilter" class="form-control">
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label for="maxAmount" >Max Amount:</label>
+                                <input type="number" id="maxAmount" name="maxAmount" class="form-control">
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label for="minAmount">Min Amount:</label>
+                                <input type="number" id="minAmount" name="minAmount" class="form-control">
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label for="startDate">Start Date:</label>
+                                <input type="date" id="startDate" name="startDate" class="form-control">
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label for="endDate" >End Date:</label>
+                                <input type="date" id="endDate" name="endDate" class="form-control">
+                            </div>
+                            <div class="col-md-8 mb-2">
+                                <label>Time Period:</label>
+                                <select id="timePeriod" name="timePeriod" class="form-control">
+                                    <option value="lastMonth">Last Month</option>
+                                    <option value="lastWeek">Last Week</option>
+                                    <option value="lastYear">Last Year</option>
+                                </select>
+                            </div>
+                            <div class="col-md-8 mt-2">
+                                <button type="button" class="btn btn-primary" onclick="applyFilters()">Apply Filters
+                                </button>
+                                <button type="button" class="btn btn-secondary ml-2" onclick="resetFilters()">Reset
+                                    Filters
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -172,6 +238,15 @@
                 console.error('Error:', error);
             });
     }
+    function toggleFiltersForm() {
+        var filterForm = document.getElementById('filterForm');
+        if (filterForm.style.display === 'none' || filterForm.style.display === '') {
+            filterForm.style.display = 'block';
+        } else {
+            filterForm.style.display = 'none';
+        }
+    }
+
 </script>
 
 </body>
