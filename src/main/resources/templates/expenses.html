@@ -7,11 +7,17 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
           crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.6.4.slim.min.js"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+            crossorigin="anonymous"></script>
+    <script th:src="@{/js/expenses.js}"></script>
     <script th:inline="javascript">
         window.onload = function () {
             var expenses = [[${previousExpenses}]];
             var data = calculateExpenses(expenses);
-
             var chart = new CanvasJS.Chart("chartContainer", {
                 animationEnabled: true,
                 title: {
@@ -27,98 +33,14 @@
             });
             chart.render();
         }
-
-        function calculateExpenses(expenses) {
-            let perType = new Map();
-
-            expenses.forEach(function (expense) {
-                if (!perType.has(expense.type)) {
-                    perType.set(expense.type, expense.amount);
-                } else {
-                    let previousAmount = perType.get(expense.type);
-                    perType.set(expense.type, previousAmount + expense.amount);
-                }
-            });
-            var data = []
-            var sum = 0;
-            perType.forEach((value, key) => {
-                sum += value;
-                console.log(key);
-            })
-            perType.forEach((value, key) => {
-                var percent = (value / sum) * 100
-                data.push({y: percent, label: key})
-            })
-            return data;
-        }
     </script>
-    <script src="https://code.jquery.com/jquery-3.6.4.slim.min.js"
-            crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
-            crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
-            crossorigin="anonymous"></script>
-    <style>
-        @media only screen and (max-width: 600px) {
-            body {
-                font-size: 14px;
-            }
 
-            h2 {
-                font-size: 18px;
-            }
+    <link th:href="@{/css/style.css}" rel="stylesheet">
 
-            table {
-                font-size: 12px;
-            }
-            .form-column {
-                display: none;
-                order: 1;
-            }
-
-            .content-column {
-                order: 2;
-            }
-        }
-    </style>
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" th:href="@{/index}">Money Management App</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item" th:if="${userRole == 'ROLE_ANONYMOUS'}">
-                    <a class="nav-link active" aria-current="page" th:href="@{/register}">Register</a>
-                </li>
-                <li class="nav-item" th:if="${userRole == 'ROLE_ANONYMOUS'}">
-                    <a class="nav-link active" aria-current="page" th:href="@{/login}">Login</a>
-                </li>
-                <li class="nav-item" th:if="${userRole == 'ROLE_ADMIN'}">
-                    <a class="nav-link active" aria-current="page" th:href="@{/admin/users}">Users</a>
-                </li>
-                <li class="nav-item" th:if="${userRole == 'ROLE_USER' or userRole == 'ROLE_ADMIN'}">
-                    <a class="nav-link active" aria-current="page" th:href="@{/logout}">Logout</a>
-                </li>
-                <li class="nav-item" th:if="${userRole == 'ROLE_USER'}">
-                    <a class="nav-link active" aria-current="page" th:href="@{/expenses}">Expenses</a>
-                </li>
-                <li class="nav-item" th:if="${userRole == 'ROLE_USER'}">
-                    <a class="nav-link active" aria-current="page" th:href="@{/expense}">Add Expense</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" th:href="@{/investing-calculator}">Investing
-                        Calculator</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
+<div th:replace="~{utils/navbar :: navbar}"></div>
 
 <div class="container-fluid">
     <div class="row">
@@ -172,19 +94,17 @@
         </div>
         <div class="d-inline col-md-4 offset-md-0 form-column">
             <div class="card" id="formcard">
-                <div class="card-header">
-                    <h2 class="text-center">Filter Expenses</h2>
-                    <button type="button" class="btn btn-primary d-md-none" onclick="toggleFiltersForm()">Toggle Filters</button>
-                </div>
-                <div class="card-body">
+                <div class="card-body ">
                     <form id="filterForm">
                         <div class="row">
-                            <div class="col-md-12 mb-2">
+                            <div class="col-md-6 mb-2">
                                 <label for="typeFilter">Type:</label>
                                 <input type="text" id="typeFilter" name="typeFilter" class="form-control">
                             </div>
                             <div class="col-md-6 mb-2">
-                                <label for="maxAmount" >Max Amount:</label>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label for="maxAmount">Max Amount:</label>
                                 <input type="number" id="maxAmount" name="maxAmount" class="form-control">
                             </div>
                             <div class="col-md-6 mb-2">
@@ -196,7 +116,7 @@
                                 <input type="date" id="startDate" name="startDate" class="form-control">
                             </div>
                             <div class="col-md-6 mb-2">
-                                <label for="endDate" >End Date:</label>
+                                <label for="endDate">End Date:</label>
                                 <input type="date" id="endDate" name="endDate" class="form-control">
                             </div>
                             <div class="col-md-8 mb-2">
@@ -221,33 +141,6 @@
         </div>
     </div>
 </div>
-
-<script th:inline="javascript">
-    function payExpense(expenseId) {
-        fetch('/update-expense-date/' + expenseId, {
-            method: 'PUT'
-        })
-            .then(response => {
-                if (response.ok) {
-                    location.reload();
-                } else {
-                    console.error('Failed to update expense date');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-    }
-    function toggleFiltersForm() {
-        var filterForm = document.getElementById('filterForm');
-        if (filterForm.style.display === 'none' || filterForm.style.display === '') {
-            filterForm.style.display = 'block';
-        } else {
-            filterForm.style.display = 'none';
-        }
-    }
-
-</script>
 
 </body>
 </html>

@@ -1,0 +1,30 @@
+@media only screen and (max-width: 600px) {
+    body {
+        font-size: 14px;
+    }
+
+    h2 {
+        font-size: 18px;
+    }
+
+    table {
+        font-size: 12px;
+    }
+
+    .form-column {
+        display: none;
+        order: 1;
+    }
+
+    .content-column {
+        order: 2;
+    }
+
+    .btn-primary {
+        font-size: 12px;
+    }
+
+    .btn-secondary {
+        font-size: 12px;
+    }
+}

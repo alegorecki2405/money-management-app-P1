@@ -14,44 +14,18 @@
                 crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
                 crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-yGBxCveA6nPqECoCegGpqu5i9Nf8VLy3UkTJh8t+zMJGgs6fi9QDpd3q22K1UpTi"
+                crossorigin="anonymous"></script>
+
+        <script th:src="@{/js/investing-calculator.js}"></script>
+        <link th:href="@{/css/style.css}" rel="stylesheet">
     </head>
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" th:href="@{/index}">Money Management App</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item" th:if="${userRole == 'ROLE_ANONYMOUS'}">
-                    <a class="nav-link active" aria-current="page" th:href="@{/register}">Register</a>
-                </li>
-                <li class="nav-item" th:if="${userRole == 'ROLE_ANONYMOUS'}">
-                    <a class="nav-link active" aria-current="page" th:href="@{/login}">Login</a>
-                </li>
-                <li class="nav-item" th:if="${userRole == 'ROLE_ADMIN'}">
-                    <a class="nav-link active" aria-current="page" th:href="@{/admin/users}">Users</a>
-                </li>
-                <li class="nav-item" th:if="${userRole == 'ROLE_USER' or userRole == 'ROLE_ADMIN'}">
-                    <a class="nav-link active" aria-current="page" th:href="@{/logout}">Logout</a>
-                </li>
-                <li class="nav-item" th:if="${userRole == 'ROLE_USER'}">
-                    <a class="nav-link active" aria-current="page" th:href="@{/expenses}">Expenses</a>
-                </li>
-                <li class="nav-item" th:if="${userRole == 'ROLE_USER'}">
-                    <a class="nav-link active" aria-current="page" th:href="@{/expense}">Add Expense</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" th:href="@{/investing-calculator}">Investing Calculator</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
+<div th:replace="~{utils/navbar :: navbar}"></div>
+
 
 <div class="container mt-3">
     <div class="row">
@@ -81,7 +55,8 @@
 
                     <div class="mb-3">
                         <label for="numberOfYears" class="form-label">Number of Years:</label>
-                        <input type="number" class="form-control" id="numberOfYears" placeholder="Enter number of years">
+                        <input type="number" class="form-control" id="numberOfYears"
+                               placeholder="Enter number of years">
                     </div>
 
                     <div class="mb-3">
@@ -97,40 +72,6 @@
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-yGBxCveA6nPqECoCegGpqu5i9Nf8VLy3UkTJh8t+zMJGgs6fi9QDpd3q22K1UpTi"
-        crossorigin="anonymous"></script>
-
-<script>
-    function calculateReturn() {
-        const initialAmount = parseFloat(document.getElementById('initialAmount').value);
-        const contributionType = document.getElementById('contributionType').value;
-        const contributionAmount = parseFloat(document.getElementById('contributionAmount').value);
-        const numberOfYears = parseInt(document.getElementById('numberOfYears').value);
-        const annualReturn = parseFloat(document.getElementById('annualReturn').value) / 100;
-
-        let total = initialAmount;
-        let amountAdded = initialAmount;
-        let months = 0;
-        if (contributionType === 'monthly') {
-            months = numberOfYears * 12;
-            for (let i = 0; i < months; i++) {
-                total *= 1 + annualReturn / 12;
-                total += contributionAmount;
-                amountAdded += contributionAmount;
-            }
-        } else if (contributionType === 'yearly') {
-            months = numberOfYears;
-            for (let i = 0; i < months; i++) {
-                total *= 1 + annualReturn;
-                total += contributionAmount;
-                amountAdded += contributionAmount;
-            }
-        }
-
-        document.getElementById('result').innerText = `Investment Return: Total return after ${numberOfYears} years: ${total.toFixed(2)} the amount of money added ${amountAdded}`;
-    }
-</script>
 
 </body>
 </html>

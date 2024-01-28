@@ -23,7 +23,7 @@ public class SpringSecurity {
     }
 
     @Bean
-    public static PasswordEncoder passwordEncoder(){
+    public static PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
@@ -31,9 +31,9 @@ public class SpringSecurity {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeHttpRequests((authorize) ->
-                        authorize.requestMatchers("/register/**","/index","/investing-calculator").permitAll()
-                                .requestMatchers("/admin/users","/admin/delete/**").hasAnyRole("ADMIN")
-                                .requestMatchers("/expenses/**","/expense/**","/update-expense-date/**").hasAnyRole("USER")
+                        authorize.requestMatchers("/register/**", "/index", "/investing-calculator", "/js/**", "/css/**").permitAll()
+                                .requestMatchers("/admin/users", "/admin/delete/**").hasAnyRole("ADMIN")
+                                .requestMatchers("/expenses/**", "/expense/**", "/update-expense-date/**").hasAnyRole("USER")
                 ).formLogin(
                         form -> form
                                 .loginPage("/login")
@@ -47,6 +47,7 @@ public class SpringSecurity {
                 );
         return http.build();
     }
+
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring().requestMatchers(new AntPathRequestMatcher("/h2-console/**"));
