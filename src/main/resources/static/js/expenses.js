@@ -22,6 +22,7 @@ function calculateExpenses(expenses) {
     return data;
 }
 
+//pay expense
 function payExpense(expenseId) {
     fetch('/update-expense-date/' + expenseId, {
         method: 'PUT'
@@ -36,4 +37,60 @@ function payExpense(expenseId) {
         .catch(error => {
             console.error('Error:', error);
         });
+}
+
+//filters
+
+
+// Function to handle start date or end date change
+function handleDateChange() {
+    var startDate = document.getElementById('startDate').value;
+    var endDate = document.getElementById('endDate').value;
+
+    if (startDate !== '' || endDate !== '') {
+        document.getElementById('timePeriod').value = '';
+    }
+}
+
+function handleSelectChange() {
+    var timePeriodSelect = document.getElementById('timePeriod').value;
+
+    if (timePeriodSelect !== '') {
+        document.getElementById('startDate').value = '';
+        document.getElementById('endDate').value = '';
+    }
+}
+
+function applyFilters() {
+    // Get filter values from the form
+    var typeFilter = document.getElementById('typeFilter').value;
+    var maxAmount = document.getElementById('maxAmount').value;
+    var minAmount = document.getElementById('minAmount').value;
+    var startDate = document.getElementById('startDate').value;
+    var endDate = document.getElementById('endDate').value;
+    var timePeriod = document.getElementById('timePeriod').value;
+
+    // Perform filtering logic here (modify as per your application)
+    // You may need to make an AJAX request to the server with the filter parameters
+    // and update the table or chart accordingly.
+
+    // For now, let's just log the filter values to the console
+    console.log("Type Filter: " + typeFilter);
+    console.log("Max Amount: " + maxAmount);
+    console.log("Min Amount: " + minAmount);
+    console.log("Start Date: " + startDate);
+    console.log("End Date: " + endDate);
+    console.log("Time Period: " + timePeriod);
+}
+
+function resetFilters() {
+    // Reset form fields to default values or empty
+    document.getElementById('typeFilter').value = '';
+    document.getElementById('maxAmount').value = '';
+    document.getElementById('minAmount').value = '';
+    document.getElementById('startDate').value = '';
+    document.getElementById('endDate').value = '';
+    document.getElementById('timePeriod').value = 'lastMonth';
+
+    // Perform additional reset logic if needed
 }
