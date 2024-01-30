@@ -79,12 +79,11 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     private List<ExpenseDto> filterExpenses(List<ExpenseDto> expenseDtos, String typeFilter, BigDecimal maxAmount, BigDecimal minAmount, Date startDate, Date endDate, String timePeriod) {
         return expenseDtos.stream()
-                .filter(expenseDto -> typeFilter == null || typeFilter.isEmpty() || expenseDto.getType().equals(ExpenseType.valueOf(typeFilter)))
-                .filter(expenseDto -> maxAmount == null || expenseDto.getAmount().compareTo(maxAmount) <= 0)
-                .filter(expenseDto -> minAmount == null || expenseDto.getAmount().compareTo(minAmount) >= 0)
+                .filter(expenseDto -> isTypeMatch(expenseDto, typeFilter))
+                .filter(expenseDto -> isAmountInRange(expenseDto, maxAmount, minAmount))
                 .filter(expenseDto -> {
                     try {
-                        return isInRange(expenseDto, startDate, endDate);
+                        return isDateInRange(expenseDto, startDate, endDate);
                     } catch (ParseException e) {
                         throw new RuntimeException(e);
                     }
@@ -92,7 +91,16 @@ public class ExpenseServiceImpl implements ExpenseService {
                 .collect(Collectors.toList());
     }
 
-    private boolean isInRange(ExpenseDto expenseDto, Date startDate, Date endDate) throws ParseException {
+    private boolean isTypeMatch(ExpenseDto expenseDto, String typeFilter) {
+        return typeFilter == null || typeFilter.isEmpty() || expenseDto.getType().equals(ExpenseType.valueOf(typeFilter));
+    }
+
+    private boolean isAmountInRange(ExpenseDto expenseDto, BigDecimal maxAmount, BigDecimal minAmount) {
+        return (maxAmount == null || expenseDto.getAmount().compareTo(maxAmount) <= 0) &&
+                (minAmount == null || expenseDto.getAmount().compareTo(minAmount) >= 0);
+    }
+
+    private boolean isDateInRange(ExpenseDto expenseDto, Date startDate, Date endDate) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date expenseDate = sdf.parse(sdf.format(expenseDto.getDate()));
         if (startDate != null && endDate != null) {
