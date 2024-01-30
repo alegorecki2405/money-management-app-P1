@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 
-import java.util.Collections;
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -68,17 +70,45 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     @Override
-    public Model createModelForExpensesTemplate(Model model, User user, String typeFilter, Double maxAmount, Double minAmount, String startDate, String endDate, String timePeriod) {
-        if (typeFilter != null && !typeFilter.isEmpty()) {
-            model.addAttribute("futureExpenses", findAllFutureExpensesByUser(user));
-            model.addAttribute("previousExpenses", findAllPreviousExpensesByUser(user));
-        } else {
-            model.addAttribute("futureExpenses", Collections.EMPTY_LIST);
-            model.addAttribute("previousExpenses", Collections.EMPTY_LIST);
-        }
-
+    public Model createModelForExpensesTemplate(Model model, User user, String typeFilter, BigDecimal maxAmount, BigDecimal minAmount, Date startDate, Date endDate, String timePeriod) {
+        model.addAttribute("futureExpenses", filterExpenses(findAllFutureExpensesByUser(user), typeFilter, maxAmount, minAmount, startDate, endDate, timePeriod));
+        model.addAttribute("previousExpenses", filterExpenses(findAllPreviousExpensesByUser(user), typeFilter, maxAmount, minAmount, startDate, endDate, timePeriod));
         model.addAttribute("userRole", authenticationFacade.getHighestRole());
         return model;
+    }
+
+    private List<ExpenseDto> filterExpenses(List<ExpenseDto> expenseDtos, String typeFilter, BigDecimal maxAmount, BigDecimal minAmount, Date startDate, Date endDate, String timePeriod) {
+        return expenseDtos.stream()
+                .filter(expenseDto -> typeFilter == null || typeFilter.isEmpty() || expenseDto.getType().equals(ExpenseType.valueOf(typeFilter)))
+                .filter(expenseDto -> maxAmount == null || expenseDto.getAmount().compareTo(maxAmount) <= 0)
+                .filter(expenseDto -> minAmount == null || expenseDto.getAmount().compareTo(minAmount) >= 0)
+                .filter(expenseDto -> {
+                    try {
+                        return isInRange(expenseDto, startDate, endDate);
+                    } catch (ParseException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .collect(Collectors.toList());
+    }
+
+    private boolean isInRange(ExpenseDto expenseDto, Date startDate, Date endDate) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date expenseDate = sdf.parse(sdf.format(expenseDto.getDate()));
+        if (startDate != null && endDate != null) {
+            Date start = sdf.parse(sdf.format(startDate));
+            Date end = sdf.parse(sdf.format(endDate));
+            return (expenseDate.after(start) || expenseDate.equals(start)) && (expenseDate.before(end) || expenseDate.equals(end));
+        }
+        if (startDate != null) {
+            Date start = sdf.parse(sdf.format(startDate));
+            return expenseDate.after(start) || expenseDate.equals(start);
+        }
+        if (endDate != null) {
+            Date end = sdf.parse(sdf.format(endDate));
+            return expenseDate.before(end) || expenseDate.equals(end);
+        }
+        return true;
     }
 
     private List<ExpenseDto> mapToExpenseDtoList(List<Expense> expenses) {

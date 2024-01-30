@@ -7,6 +7,7 @@ import aleksander.gorecki.moneymanagementapp.entity.User;
 import aleksander.gorecki.moneymanagementapp.service.ExpenseService;
 import aleksander.gorecki.moneymanagementapp.service.UserService;
 import jakarta.validation.Valid;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Controller
@@ -58,10 +60,10 @@ public class ExpenseController {
     @GetMapping("/expenses")
     public String expenses(Model model,
                            @RequestParam(required = false) String typeFilter,
-                           @RequestParam(required = false) Double maxAmount,
-                           @RequestParam(required = false) Double minAmount,
-                           @RequestParam(required = false) String startDate,
-                           @RequestParam(required = false) String endDate,
+                           @RequestParam(required = false) BigDecimal maxAmount,
+                           @RequestParam(required = false) BigDecimal minAmount,
+                           @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
+                           @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate,
                            @RequestParam(required = false) String timePeriod) {
         User user = userService.findUserByEmail(authenticationFacade.getAuth().getName());
         expenseService.createModelForExpensesTemplate(model, user, typeFilter, maxAmount, minAmount, startDate, endDate, timePeriod);
@@ -70,8 +72,8 @@ public class ExpenseController {
 
     @PostMapping("/applyFilters")
     public String applyFiltersAndRedirect(@RequestParam(required = false) String typeFilter,
-                                          @RequestParam(required = false) Double maxAmount,
-                                          @RequestParam(required = false) Double minAmount,
+                                          @RequestParam(required = false) BigDecimal maxAmount,
+                                          @RequestParam(required = false) BigDecimal minAmount,
                                           @RequestParam(required = false) String startDate,
                                           @RequestParam(required = false) String endDate,
                                           @RequestParam(required = false) String timePeriod,

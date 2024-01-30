@@ -5,6 +5,8 @@ import aleksander.gorecki.moneymanagementapp.entity.Expense;
 import aleksander.gorecki.moneymanagementapp.entity.User;
 import org.springframework.ui.Model;
 
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 public interface ExpenseService {
@@ -20,6 +22,6 @@ public interface ExpenseService {
 
     Expense findById(Long expenseId);
 
-    Model createModelForExpensesTemplate(Model model, User user, String typeFilter, Double maxAmount, Double minAmount, String startDate, String endDate, String timePeriod);
+    Model createModelForExpensesTemplate(Model model, User user, String typeFilter, BigDecimal maxAmount, BigDecimal minAmount, Date startDate, Date endDate, String timePeriod);
 }
 
