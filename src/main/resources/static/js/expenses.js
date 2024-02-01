@@ -71,5 +71,6 @@ function resetFilters() {
     document.getElementById('minAmount').value = '';
     document.getElementById('startDate').value = '';
     document.getElementById('endDate').value = '';
-    document.getElementById('timePeriod').value = 'lastMonth';
+    document.getElementById('timePeriod').value = '';
+    document.getElementById('filterForm').submit();
 }

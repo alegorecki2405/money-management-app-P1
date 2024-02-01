@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -74,6 +75,17 @@ public class ExpenseServiceImpl implements ExpenseService {
         model.addAttribute("futureExpenses", filterExpenses(findAllFutureExpensesByUser(user), typeFilter, maxAmount, minAmount, startDate, endDate, timePeriod));
         model.addAttribute("previousExpenses", filterExpenses(findAllPreviousExpensesByUser(user), typeFilter, maxAmount, minAmount, startDate, endDate, timePeriod));
         model.addAttribute("userRole", authenticationFacade.getHighestRole());
+        model.addAttribute("typeFilter", typeFilter);
+        model.addAttribute("maxAmount", maxAmount);
+        model.addAttribute("minAmount", minAmount);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        if (startDate != null) {
+            model.addAttribute("startDate", dateFormat.format(startDate));
+        }
+        if (endDate != null) {
+            model.addAttribute("endDate", dateFormat.format(endDate));
+        }
+        model.addAttribute("timePeriod", timePeriod);
         return model;
     }
 
@@ -88,7 +100,41 @@ public class ExpenseServiceImpl implements ExpenseService {
                         throw new RuntimeException(e);
                     }
                 })
+                .filter(expenseDto -> {
+                    try {
+                        return isFromTimePeriod(expenseDto, timePeriod);
+                    } catch (ParseException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
                 .collect(Collectors.toList());
+    }
+
+    private boolean isFromTimePeriod(ExpenseDto expenseDto, String timePeriod) throws ParseException {
+        Calendar cal = Calendar.getInstance();
+        if (timePeriod != null && !timePeriod.isEmpty()) {
+            switch (timePeriod) {
+                case "lastYear":
+                    cal.add(Calendar.YEAR, -1);
+                    return isDateInRange(expenseDto, cal.getTime(), new Date());
+                case "lastMonth":
+                    cal.add(Calendar.MONTH, -1);
+                    return isDateInRange(expenseDto, cal.getTime(), new Date());
+                case "lastWeek":
+                    cal.add(Calendar.DAY_OF_WEEK, -7);
+                    return isDateInRange(expenseDto, cal.getTime(), new Date());
+                case "nextWeek":
+                    cal.add(Calendar.DAY_OF_WEEK, 7);
+                    return isDateInRange(expenseDto, new Date(), cal.getTime());
+                case "nextMonth":
+                    cal.add(Calendar.MONTH, 1);
+                    return isDateInRange(expenseDto, new Date(), cal.getTime());
+                case "nextYear":
+                    cal.add(Calendar.YEAR, 1);
+                    return isDateInRange(expenseDto, new Date(), cal.getTime());
+            }
+        }
+        return true;
     }
 
     private boolean isTypeMatch(ExpenseDto expenseDto, String typeFilter) {
