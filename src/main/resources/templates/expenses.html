@@ -95,10 +95,12 @@
                 </tbody>
             </table>
         </div>
-        <div class="d-inline col-md-4 offset-md-0 form-column">
+        <div class="d-inline col-md-4 offset-md-0 form-column p-0 m-0">
             <div class="card border-0" id="formcard">
                 <div class="card-body">
-                    <h2>Filters</h2>
+                    <h2 onclick="toggleForm()" id="filtersHeader">Filters</h2>
+                    <button type="button" class="btn btn-primary" id="filtersToggle" onclick="toggleForm()">Filters
+                    </button>
                     <form id="filterForm" method="post" action="/applyFilters">
                         <div class="row">
                             <div class="col-md-6 mb-2">

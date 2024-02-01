@@ -74,3 +74,12 @@ function resetFilters() {
     document.getElementById('timePeriod').value = '';
     document.getElementById('filterForm').submit();
 }
+
+function toggleForm() {
+    var x = document.getElementById("filterForm")
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    } else {
+        x.style.display = "none";
+    }
+}
