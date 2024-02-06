@@ -1,10 +1,12 @@
 package aleksander.gorecki.moneymanagementapp.service;
 
 import aleksander.gorecki.moneymanagementapp.dto.UserDto;
-import aleksander.gorecki.moneymanagementapp.entity.Role;
+import aleksander.gorecki.moneymanagementapp.entity.ExpenseType;
 import aleksander.gorecki.moneymanagementapp.entity.User;
+import aleksander.gorecki.moneymanagementapp.repository.ExpenseTypeRepository;
 import aleksander.gorecki.moneymanagementapp.repository.RoleRepository;
 import aleksander.gorecki.moneymanagementapp.repository.UserRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,25 +16,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final ExpenseTypeRepository expenseTypeRepository;
     private final PasswordEncoder passwordEncoder;
-
-    public UserServiceImpl(UserRepository userRepository,
-                           RoleRepository roleRepository,
-                           PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     @Override
     @Transactional
     public void saveUser(UserDto userDto) {
-        User user = createUserFromDto(userDto);
-        userRepository.save(user);
+        defaultExpneseTypes(createUserFromDto(userDto));
     }
 
     @Override
@@ -58,8 +53,8 @@ public class UserServiceImpl implements UserService {
         user.setName(userDto.getFirstName() + " " + userDto.getLastName());
         user.setEmail(userDto.getEmail());
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
-        user.setRoles(Collections.singletonList(getRole()));
-        return user;
+        user.setRoles(Collections.singletonList(roleRepository.findByName("ROLE_USER")));
+        return userRepository.save(user);
     }
 
     private UserDto mapToUserDto(User user) {
@@ -71,14 +66,24 @@ public class UserServiceImpl implements UserService {
         return userDto;
     }
 
-    private Role getRole() {
-        if (roleRepository.findByName("ROLE_USER") == null) {
-            Role role = new Role();
-            role.setName("ROLE_USER");
-            return roleRepository.save(role);
-        } else {
-            return roleRepository.findByName("ROLE_USER");
-        }
+    public void defaultExpneseTypes(User user) {
+        ExpenseType food = new ExpenseType();
+        food.setName("FOOD");
+        food.setUser(user);
+        ExpenseType entertainment = new ExpenseType();
+        entertainment.setName("ENTERTAINMENT");
+        entertainment.setUser(user);
+        ExpenseType bills = new ExpenseType();
+        bills.setName("BILLS");
+        bills.setUser(user);
+        ExpenseType subscriptions = new ExpenseType();
+        subscriptions.setName("SUBSCRIPTIONS");
+        subscriptions.setUser(user);
+
+        expenseTypeRepository.save(food);
+        expenseTypeRepository.save(entertainment);
+        expenseTypeRepository.save(bills);
+        expenseTypeRepository.save(subscriptions);
     }
 }
 
