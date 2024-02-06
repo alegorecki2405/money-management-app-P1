@@ -38,8 +38,10 @@ public class ExpenseController {
 
     @GetMapping("/expense")
     public String createExpenseForm(Model model) {
+        User user = userService.findUserByEmail(authenticationFacade.getAuth().getName());
         model.addAttribute("expense", new ExpenseDto());
         model.addAttribute("userRole", authenticationFacade.getHighestRole());
+        model.addAttribute("expenseTypes", expenseService.findAllTypesByUser(user));
         return "expense";
     }
 

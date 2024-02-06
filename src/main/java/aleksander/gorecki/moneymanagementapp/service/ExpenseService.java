@@ -2,6 +2,7 @@ package aleksander.gorecki.moneymanagementapp.service;
 
 import aleksander.gorecki.moneymanagementapp.dto.ExpenseDto;
 import aleksander.gorecki.moneymanagementapp.entity.Expense;
+import aleksander.gorecki.moneymanagementapp.entity.ExpenseType;
 import aleksander.gorecki.moneymanagementapp.entity.User;
 import org.springframework.ui.Model;
 
@@ -21,6 +22,8 @@ public interface ExpenseService {
     void saveOrUpdate(Expense expense);
 
     Expense findById(Long expenseId);
+
+    List<ExpenseType> findAllTypesByUser(User user);
 
     Model createModelForExpensesTemplate(Model model, User user, String typeFilter, BigDecimal maxAmount, BigDecimal minAmount, Date startDate, Date endDate, String timePeriod);
 }

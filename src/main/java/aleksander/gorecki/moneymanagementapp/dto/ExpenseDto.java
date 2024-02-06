@@ -1,8 +1,6 @@
 package aleksander.gorecki.moneymanagementapp.dto;
 
 
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -26,9 +24,8 @@ public class ExpenseDto {
     @NotNull(message = "Amount cannot be null")
     @Min(0)
     private BigDecimal amount;
-    @NotNull(message = "Type should not be null")
-    @Enumerated(EnumType.STRING)
-    private ExpenseType type;
+    @NotEmpty(message = "Type should not be empty")
+    private String type;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date date;
 }

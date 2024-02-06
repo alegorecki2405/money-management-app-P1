@@ -85,10 +85,12 @@
 
                         <div class="form-group mb-3">
                             <label class="form-label" for="type">Type</label>
-                            <select class="form-control" id="type" name="type" th:field="*{type}">
-                                <option th:each="expenseType : ${T(aleksander.gorecki.moneymanagementapp.dto.ExpenseType).values()}"
-                                        th:value="${expenseType}" th:text="${expenseType}"></option>
-                            </select>
+                            <input class="form-control" id="type" type="text" list="types" th:field="*{type}"
+                                   autocomplete="off">
+                            <datalist id="types" th:field="*{type}">
+                                <option th:each="expenseType : ${expenseTypes}"
+                                        th:value="${expenseType.name}" th:text="${expenseType.name}"></option>
+                            </datalist>
                             <p th:errors="*{type}" class="text-danger"
                                th:if="${#fields.hasErrors('type')}"></p>
                         </div>

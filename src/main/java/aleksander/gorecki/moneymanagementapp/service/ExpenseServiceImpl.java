@@ -2,10 +2,12 @@ package aleksander.gorecki.moneymanagementapp.service;
 
 import aleksander.gorecki.moneymanagementapp.config.AuthenticationFacade;
 import aleksander.gorecki.moneymanagementapp.dto.ExpenseDto;
-import aleksander.gorecki.moneymanagementapp.dto.ExpenseType;
 import aleksander.gorecki.moneymanagementapp.entity.Expense;
+import aleksander.gorecki.moneymanagementapp.entity.ExpenseType;
 import aleksander.gorecki.moneymanagementapp.entity.User;
 import aleksander.gorecki.moneymanagementapp.repository.ExpenseRepository;
+import aleksander.gorecki.moneymanagementapp.repository.ExpenseTypeRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -19,15 +21,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class ExpenseServiceImpl implements ExpenseService {
 
     private final ExpenseRepository expenseRepository;
     private final AuthenticationFacade authenticationFacade;
-
-    public ExpenseServiceImpl(ExpenseRepository expenseRepository, AuthenticationFacade authenticationFacade) {
-        this.expenseRepository = expenseRepository;
-        this.authenticationFacade = authenticationFacade;
-    }
+    private final ExpenseTypeRepository expenseTypeRepository;
 
     @Override
     public List<ExpenseDto> findAllByUser(User user) {
@@ -49,16 +48,37 @@ public class ExpenseServiceImpl implements ExpenseService {
     @Transactional
     public Expense create(User user, ExpenseDto expenseDto) {
         Date date = expenseDto.getDate() != null ? expenseDto.getDate() : new Date();
+//        String type = getExpenseType(user, expenseDto.getType());
+
         Expense expense = new Expense(
                 expenseDto.getId(),
                 expenseDto.getName(),
                 expenseDto.getAmount(),
-                expenseDto.getType().name(),
+                expenseDto.getType(),
                 date,
                 user
         );
         return expenseRepository.save(expense);
     }
+
+//    private String getExpenseType(User user, String typeName) {
+//        ExpenseType expenseType = expenseTypeRepository.findByName(typeName);
+//
+//        if (expenseType == null) {
+//            expenseType = createExpenseType(user, typeName);
+//        }
+//
+//        return expenseType.getName();
+//    }
+//
+//    private ExpenseType createExpenseType(User user, String typeName) {
+//        ExpenseType expenseType = new ExpenseType();
+//        expenseType.setName(typeName.toUpperCase());
+//        ExpenseType type = expenseTypeRepository.save(expenseType);
+////        user.getExpenseTypes().add(type);
+////        userRepository.save(user);
+//        return type;
+//    }
 
     @Override
     public void saveOrUpdate(Expense expense) {
@@ -68,6 +88,11 @@ public class ExpenseServiceImpl implements ExpenseService {
     @Override
     public Expense findById(Long expenseId) {
         return expenseRepository.findById(expenseId).orElse(null);
+    }
+
+    @Override
+    public List<ExpenseType> findAllTypesByUser(User user) {
+        return expenseTypeRepository.findAllByUser(user);
     }
 
     @Override
@@ -138,7 +163,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     private boolean isTypeMatch(ExpenseDto expenseDto, String typeFilter) {
-        return typeFilter == null || typeFilter.isEmpty() || expenseDto.getType().equals(ExpenseType.valueOf(typeFilter));
+        return typeFilter == null || typeFilter.isEmpty() || expenseDto.getType().equals(typeFilter);
     }
 
     private boolean isAmountInRange(ExpenseDto expenseDto, BigDecimal maxAmount, BigDecimal minAmount) {
@@ -183,7 +208,7 @@ public class ExpenseServiceImpl implements ExpenseService {
         expenseDto.setName(expense.getName());
         expenseDto.setAmount(expense.getAmount());
         expenseDto.setDate(expense.getDate());
-        expenseDto.setType(ExpenseType.valueOf(expense.getType()));
+        expenseDto.setType(expense.getType());
         return expenseDto;
     }
 }
