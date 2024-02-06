@@ -105,8 +105,14 @@
                         <div class="row">
                             <div class="col-md-6 mb-2">
                                 <label for="typeFilter">Type:</label>
-                                <input type="text" id="typeFilter" name="typeFilter" class="form-control"
-                                       th:value="${typeFilter}">
+                                <!--                                <input class="form-control" type="text" id="typeFilter" name="typeFilter" -->
+                                <!--                                       th:value="${typeFilter}">-->
+                                <input class="form-control" id="typeFilter" name="typeFilter" type="text" list="types"
+                                       autocomplete="off">
+                                <datalist id="types">
+                                    <option th:each="expenseType : ${expenseTypes}"
+                                            th:value="${expenseType.name}" th:text="${expenseType.name}"></option>
+                                </datalist>
                             </div>
                             <div class="col-md-6 mb-2">
                             </div>

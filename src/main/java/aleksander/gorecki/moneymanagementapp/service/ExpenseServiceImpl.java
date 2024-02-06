@@ -48,37 +48,33 @@ public class ExpenseServiceImpl implements ExpenseService {
     @Transactional
     public Expense create(User user, ExpenseDto expenseDto) {
         Date date = expenseDto.getDate() != null ? expenseDto.getDate() : new Date();
-//        String type = getExpenseType(user, expenseDto.getType());
+        String type = getExpenseType(user, expenseDto.getType());
 
         Expense expense = new Expense(
                 expenseDto.getId(),
                 expenseDto.getName(),
                 expenseDto.getAmount(),
-                expenseDto.getType(),
+                type,
                 date,
                 user
         );
         return expenseRepository.save(expense);
     }
 
-//    private String getExpenseType(User user, String typeName) {
-//        ExpenseType expenseType = expenseTypeRepository.findByName(typeName);
-//
-//        if (expenseType == null) {
-//            expenseType = createExpenseType(user, typeName);
-//        }
-//
-//        return expenseType.getName();
-//    }
-//
-//    private ExpenseType createExpenseType(User user, String typeName) {
-//        ExpenseType expenseType = new ExpenseType();
-//        expenseType.setName(typeName.toUpperCase());
-//        ExpenseType type = expenseTypeRepository.save(expenseType);
-////        user.getExpenseTypes().add(type);
-////        userRepository.save(user);
-//        return type;
-//    }
+    private String getExpenseType(User user, String typeName) {
+        ExpenseType expenseType = expenseTypeRepository.findByName(typeName);
+        if (expenseType == null) {
+            expenseType = createExpenseType(user, typeName);
+        }
+        return expenseType.getName();
+    }
+
+    private ExpenseType createExpenseType(User user, String typeName) {
+        ExpenseType expenseType = new ExpenseType();
+        expenseType.setName(typeName.toUpperCase());
+        expenseType.setUser(user);
+        return expenseTypeRepository.save(expenseType);
+    }
 
     @Override
     public void saveOrUpdate(Expense expense) {
@@ -111,6 +107,7 @@ public class ExpenseServiceImpl implements ExpenseService {
             model.addAttribute("endDate", dateFormat.format(endDate));
         }
         model.addAttribute("timePeriod", timePeriod);
+        model.addAttribute("expenseTypes", findAllTypesByUser(user));
         return model;
     }
 
