@@ -56,7 +56,8 @@ public class ExpenseServiceImpl implements ExpenseService {
                 expenseDto.getAmount(),
                 type,
                 date,
-                user
+                user,
+                false
         );
         return expenseRepository.save(expense);
     }
