@@ -34,7 +34,6 @@ public class DataInitializer implements CommandLineRunner {
         }
 
         if (userRepository.findByEmail("admin@gmail.com") == null) {
-
             User admin = new User();
             admin.setEmail("admin@gmail.com");
             admin.setName("admin admin");
