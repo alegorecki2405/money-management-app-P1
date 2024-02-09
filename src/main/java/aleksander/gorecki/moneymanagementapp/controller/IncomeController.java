@@ -2,9 +2,8 @@ package aleksander.gorecki.moneymanagementapp.controller;
 
 import aleksander.gorecki.moneymanagementapp.config.AuthenticationFacade;
 import aleksander.gorecki.moneymanagementapp.dto.ExpenseDto;
-import aleksander.gorecki.moneymanagementapp.entity.Expense;
+import aleksander.gorecki.moneymanagementapp.dto.IncomeDto;
 import aleksander.gorecki.moneymanagementapp.entity.User;
-import aleksander.gorecki.moneymanagementapp.service.ExpenseService;
 import aleksander.gorecki.moneymanagementapp.service.UserService;
 import jakarta.validation.Valid;
 import lombok.Data;
@@ -27,48 +26,48 @@ import java.util.Date;
 
 @Data
 @Controller
-public class ExpenseController {
-    private final ExpenseService expenseService;
-    private final UserService userService;
-    private final AuthenticationFacade authenticationFacade;
+public class IncomeController {
 
-    @GetMapping("/expense")
-    public String createExpenseForm(Model model) {
+    private final AuthenticationFacade authenticationFacade;
+    private final UserService userService;
+
+    @GetMapping("/income")
+    public String createIncomeForm(Model model) {
         User user = userService.findUserByEmail(authenticationFacade.getAuth().getName());
         model.addAttribute("expense", new ExpenseDto());
         model.addAttribute("userRole", authenticationFacade.getHighestRole());
-        model.addAttribute("expenseTypes", expenseService.findAllTypesByUser(user));
-        return "expense";
+//        model.addAttribute("expenseTypes", expenseService.findAllTypesByUser(user));
+        return "income";
     }
 
-    @PostMapping("/expense/save")
-    public String createExpense(@Valid @ModelAttribute("expense") ExpenseDto expenseDto,
-                                BindingResult result,
-                                RedirectAttributes redirectAttributes) {
+    @PostMapping("/income/save")
+    public String createIncome(@Valid @ModelAttribute("income") IncomeDto incomeDto,
+                               BindingResult result,
+                               RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
-            return "expense";
+            return "income";
         }
 
         User user = userService.findUserByEmail(authenticationFacade.getAuth().getName());
-        expenseService.create(user, expenseDto);
+//        expenseService.create(user, expenseDto);
         redirectAttributes.addFlashAttribute("successMessage", "Expense added successfully");
-        return "redirect:/expense";
+        return "redirect:/income";
     }
 
-    @GetMapping("/expenses")
-    public String expenses(Model model,
-                           @RequestParam(required = false) String typeFilter,
-                           @RequestParam(required = false) BigDecimal maxAmount,
-                           @RequestParam(required = false) BigDecimal minAmount,
-                           @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
-                           @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate,
-                           @RequestParam(required = false) String timePeriod) {
+    @GetMapping("/incomes")
+    public String incomes(Model model,
+                          @RequestParam(required = false) String typeFilter,
+                          @RequestParam(required = false) BigDecimal maxAmount,
+                          @RequestParam(required = false) BigDecimal minAmount,
+                          @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
+                          @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate,
+                          @RequestParam(required = false) String timePeriod) {
         User user = userService.findUserByEmail(authenticationFacade.getAuth().getName());
-        expenseService.createModelForExpensesTemplate(model, user, typeFilter, maxAmount, minAmount, startDate, endDate, timePeriod);
-        return "/expenses";
+//        expenseService.createModelForExpensesTemplate(model, user, typeFilter, maxAmount, minAmount, startDate, endDate, timePeriod);
+        return "/incomes";
     }
 
-    @PostMapping("/expenses/applyFilters")
+    @PostMapping("/incomes/applyFilters")
     public String applyFiltersAndRedirect(@RequestParam(required = false) String typeFilter,
                                           @RequestParam(required = false) BigDecimal maxAmount,
                                           @RequestParam(required = false) BigDecimal minAmount,
@@ -84,22 +83,22 @@ public class ExpenseController {
         redirectAttributes.addAttribute("endDate", endDate);
         redirectAttributes.addAttribute("timePeriod", timePeriod);
 
-        return "redirect:/expenses";
+        return "redirect:/incomes";
     }
 
-    @PutMapping("/update-expense-date/{expenseId}")
-    public ResponseEntity<String> updateExpenseDate(@PathVariable Long expenseId) {
-        try {
-            Expense expense = expenseService.findById(expenseId); // Implement this method in ExpenseService
-            if (expense != null) {
-                expense.setDate(new Date()); // Set the expense date to the current date
-                expenseService.saveOrUpdate(expense); // Save the updated expense
-                return ResponseEntity.ok("Expense date updated successfully");
-            } else {
-                return ResponseEntity.notFound().build();
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update expense date");
-        }
+    @PutMapping("/update-income-date/{incomeId}")
+    public ResponseEntity<String> updateIncomeDate(@PathVariable Long incomeId) {
+//        try {
+//            Expense expense = expenseService.findById(expenseId);
+//            if (expense != null) {
+//                expense.setDate(new Date());
+//                expenseService.saveOrUpdate(expense);
+//                return ResponseEntity.ok("Expense date updated successfully");
+//            } else {
+//                return ResponseEntity.notFound().build();
+//            }
+//        } catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update income date");
+//        }
     }
 }

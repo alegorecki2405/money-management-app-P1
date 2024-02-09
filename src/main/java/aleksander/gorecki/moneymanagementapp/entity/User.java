@@ -60,4 +60,7 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<ExpenseType> expenseTypes;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<IncomeType> incomeTypes;
 }

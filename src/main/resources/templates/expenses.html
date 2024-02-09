@@ -101,12 +101,10 @@
                     <h2 onclick="toggleForm()" id="filtersHeader">Filters</h2>
                     <button type="button" class="btn btn-primary" id="filtersToggle" onclick="toggleForm()">Filters
                     </button>
-                    <form id="filterForm" method="post" action="/applyFilters">
+                    <form id="filterForm" method="post" action="/expenses/applyFilters">
                         <div class="row">
                             <div class="col-md-6 mb-2">
                                 <label for="typeFilter">Type:</label>
-                                <!--                                <input class="form-control" type="text" id="typeFilter" name="typeFilter" -->
-                                <!--                                       th:value="${typeFilter}">-->
                                 <input class="form-control" id="typeFilter" name="typeFilter" type="text" list="types"
                                        autocomplete="off">
                                 <datalist id="types">
