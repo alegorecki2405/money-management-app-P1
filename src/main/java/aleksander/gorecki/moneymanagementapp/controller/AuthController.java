@@ -28,6 +28,8 @@ public class AuthController {
     @GetMapping("/index")
     public String showIndexPage(Model model) {
         model.addAttribute("userRole", authenticationFacade.getHighestRole());
+        User user = userService.findUserByEmail(authenticationFacade.getAuth().getName());
+        model.addAttribute("balance", user.getBalance());
         return "index";
     }
 
