@@ -32,11 +32,9 @@ public class IncomeAndExpenseUpdateService {
     }
 
     public void updateExpenses(List<Expense> expenses) {
-        if (!expenses.isEmpty()) {
-            for (Expense expense : expenses) {
-                User user = expense.getUser();
-                expenseService.updateBalanceForExpense(user, expense);
-            }
+        for (Expense expense : expenses) {
+            User user = expense.getUser();
+            expenseService.updateBalanceForExpense(user, expense);
         }
     }
 }
