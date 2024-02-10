@@ -7,7 +7,6 @@ import aleksander.gorecki.moneymanagementapp.entity.ExpenseType;
 import aleksander.gorecki.moneymanagementapp.entity.User;
 import aleksander.gorecki.moneymanagementapp.repository.ExpenseRepository;
 import aleksander.gorecki.moneymanagementapp.repository.ExpenseTypeRepository;
-import aleksander.gorecki.moneymanagementapp.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +27,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     private final ExpenseRepository expenseRepository;
     private final AuthenticationFacade authenticationFacade;
     private final ExpenseTypeRepository expenseTypeRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @Override
     public List<ExpenseDto> findAllByUser(User user) {
@@ -60,11 +59,17 @@ public class ExpenseServiceImpl implements ExpenseService {
                 user,
                 false
         );
-//        if(!date.before(new Date())) {
-        //TODO: update balance od User and set balance Updated in expense on true
-//        }
+        updateBalanceForExpense(user, expense);
         return expenseRepository.save(expense);
     }
+
+    private void updateBalanceForExpense(User user, Expense expense) {
+        if (expense.getDate().before(new Date())) {
+            userService.updateUsersBalance(user, expense.getAmount().negate());
+            expense.setBalanceUpdated(true);
+        }
+    }
+
 
     private String getExpenseType(User user, String typeName) {
         ExpenseType expenseType = expenseTypeRepository.findByName(typeName);

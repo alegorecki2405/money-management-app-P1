@@ -7,13 +7,15 @@ import aleksander.gorecki.moneymanagementapp.entity.IncomeType;
 import aleksander.gorecki.moneymanagementapp.entity.User;
 import aleksander.gorecki.moneymanagementapp.repository.IncomeRepository;
 import aleksander.gorecki.moneymanagementapp.repository.IncomeTypeRepository;
-import aleksander.gorecki.moneymanagementapp.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,7 +27,7 @@ public class IncomeServiceImpl implements IncomeService {
     private final IncomeRepository incomeRepository;
     private final AuthenticationFacade authenticationFacade;
     private final IncomeTypeRepository incomeTypeRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @Override
     public List<IncomeDto> findAllByUser(User user) {
@@ -57,7 +59,15 @@ public class IncomeServiceImpl implements IncomeService {
                 user,
                 false
         );
+        updateBalanceForIncome(user, income);
         return incomeRepository.save(income);
+    }
+
+    private void updateBalanceForIncome(User user, Income income) {
+        if (income.getDate().before(new Date())) {
+            userService.updateUsersBalance(user, income.getAmount());
+            income.setBalanceUpdated(true);
+        }
     }
 
     private String getIncomeType(User user, String typeName) {
@@ -98,6 +108,13 @@ public class IncomeServiceImpl implements IncomeService {
         model.addAttribute("typeFilter", typeFilter);
         model.addAttribute("maxAmount", maxAmount);
         model.addAttribute("minAmount", minAmount);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        if (startDate != null) {
+            model.addAttribute("startDate", dateFormat.format(startDate));
+        }
+        if (endDate != null) {
+            model.addAttribute("endDate", dateFormat.format(endDate));
+        }
         model.addAttribute("timePeriod", timePeriod);
         model.addAttribute("incomeTypes", findAllTypesByUser(user));
         return model;
@@ -107,7 +124,48 @@ public class IncomeServiceImpl implements IncomeService {
         return incomeDtos.stream()
                 .filter(incomeDto -> isTypeMatch(incomeDto, typeFilter))
                 .filter(incomeDto -> isAmountInRange(incomeDto, maxAmount, minAmount))
+                .filter(incomeDto -> {
+                    try {
+                        return isDateInRange(incomeDto, startDate, endDate);
+                    } catch (ParseException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .filter(incomeDto -> {
+                    try {
+                        return isFromTimePeriod(incomeDto, timePeriod);
+                    } catch (ParseException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
                 .collect(Collectors.toList());
+    }
+
+    private boolean isFromTimePeriod(IncomeDto incomeDto, String timePeriod) throws ParseException {
+        Calendar cal = Calendar.getInstance();
+        if (timePeriod != null && !timePeriod.isEmpty()) {
+            switch (timePeriod) {
+                case "lastYear":
+                    cal.add(Calendar.YEAR, -1);
+                    return isDateInRange(incomeDto, cal.getTime(), new Date());
+                case "lastMonth":
+                    cal.add(Calendar.MONTH, -1);
+                    return isDateInRange(incomeDto, cal.getTime(), new Date());
+                case "lastWeek":
+                    cal.add(Calendar.DAY_OF_WEEK, -7);
+                    return isDateInRange(incomeDto, cal.getTime(), new Date());
+                case "nextWeek":
+                    cal.add(Calendar.DAY_OF_WEEK, 7);
+                    return isDateInRange(incomeDto, new Date(), cal.getTime());
+                case "nextMonth":
+                    cal.add(Calendar.MONTH, 1);
+                    return isDateInRange(incomeDto, new Date(), cal.getTime());
+                case "nextYear":
+                    cal.add(Calendar.YEAR, 1);
+                    return isDateInRange(incomeDto, new Date(), cal.getTime());
+            }
+        }
+        return true;
     }
 
     private boolean isTypeMatch(IncomeDto incomeDto, String typeFilter) {
@@ -117,6 +175,25 @@ public class IncomeServiceImpl implements IncomeService {
     private boolean isAmountInRange(IncomeDto incomeDto, BigDecimal maxAmount, BigDecimal minAmount) {
         return (maxAmount == null || incomeDto.getAmount().compareTo(maxAmount) <= 0) &&
                 (minAmount == null || incomeDto.getAmount().compareTo(minAmount) >= 0);
+    }
+
+    private boolean isDateInRange(IncomeDto incomeDto, Date startDate, Date endDate) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date incomeDate = sdf.parse(sdf.format(incomeDto.getDate()));
+        if (startDate != null && endDate != null) {
+            Date start = sdf.parse(sdf.format(startDate));
+            Date end = sdf.parse(sdf.format(endDate));
+            return (incomeDate.after(start) || incomeDate.equals(start)) && (incomeDate.before(end) || incomeDate.equals(end));
+        }
+        if (startDate != null) {
+            Date start = sdf.parse(sdf.format(startDate));
+            return incomeDate.after(start) || incomeDate.equals(start);
+        }
+        if (endDate != null) {
+            Date end = sdf.parse(sdf.format(endDate));
+            return incomeDate.before(end) || incomeDate.equals(end);
+        }
+        return true;
     }
 
     private List<IncomeDto> mapToIncomeDtoList(List<Income> incomes) {

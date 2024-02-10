@@ -37,6 +37,8 @@ public class ExpenseController {
         User user = userService.findUserByEmail(authenticationFacade.getAuth().getName());
         model.addAttribute("expense", new ExpenseDto());
         model.addAttribute("userRole", authenticationFacade.getHighestRole());
+        //TODO: consider to do something with username
+//        String userx = authenticationFacade.getAuth().getName();
         model.addAttribute("expenseTypes", expenseService.findAllTypesByUser(user));
         return "expense";
     }
