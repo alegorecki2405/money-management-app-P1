@@ -23,12 +23,11 @@
 <br/><br/>
 
 <div class="container">
-    <div th:if="${userRole == 'ROLE_ANONYMOUS'}" class="row">
-        <h1 class="text-center">Money Management App</h1>
-    </div>
-    <div th:if="${userRole == 'ROLE_USER'}" class="row">
-        <h1 class="text-center">TU BEDZIE PROFIL USERA</h1>
-        <h2 th:text="${balance}"></h2>
+    <div th:if="${userRole == 'ROLE_USER' || userRole == 'ROLE_ANONYMOUS'}" class="row">
+        <div class="row">
+            <div class="d-inline col-md-6 bg-dark"></div>
+            <div class="d-inline col-md-6"></div>
+        </div>
     </div>
 </div>
 
