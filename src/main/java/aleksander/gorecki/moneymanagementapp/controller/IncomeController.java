@@ -1,9 +1,10 @@
 package aleksander.gorecki.moneymanagementapp.controller;
 
 import aleksander.gorecki.moneymanagementapp.config.AuthenticationFacade;
-import aleksander.gorecki.moneymanagementapp.dto.ExpenseDto;
 import aleksander.gorecki.moneymanagementapp.dto.IncomeDto;
+import aleksander.gorecki.moneymanagementapp.entity.Income;
 import aleksander.gorecki.moneymanagementapp.entity.User;
+import aleksander.gorecki.moneymanagementapp.service.IncomeService;
 import aleksander.gorecki.moneymanagementapp.service.UserService;
 import jakarta.validation.Valid;
 import lombok.Data;
@@ -30,13 +31,14 @@ public class IncomeController {
 
     private final AuthenticationFacade authenticationFacade;
     private final UserService userService;
+    private final IncomeService incomeService;
 
     @GetMapping("/income")
     public String createIncomeForm(Model model) {
         User user = userService.findUserByEmail(authenticationFacade.getAuth().getName());
-        model.addAttribute("expense", new ExpenseDto());
+        model.addAttribute("income", new IncomeDto());
         model.addAttribute("userRole", authenticationFacade.getHighestRole());
-//        model.addAttribute("expenseTypes", expenseService.findAllTypesByUser(user));
+        model.addAttribute("incomeTypes", incomeService.findAllTypesByUser(user));
         return "income";
     }
 
@@ -49,8 +51,9 @@ public class IncomeController {
         }
 
         User user = userService.findUserByEmail(authenticationFacade.getAuth().getName());
-//        expenseService.create(user, expenseDto);
-        redirectAttributes.addFlashAttribute("successMessage", "Expense added successfully");
+        incomeService.create(user, incomeDto);
+        redirectAttributes.addFlashAttribute("successMessage", "Income added successfully");
+        //TODO: make it redirect with propper user ROLE
         return "redirect:/income";
     }
 
@@ -63,7 +66,7 @@ public class IncomeController {
                           @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate,
                           @RequestParam(required = false) String timePeriod) {
         User user = userService.findUserByEmail(authenticationFacade.getAuth().getName());
-//        expenseService.createModelForExpensesTemplate(model, user, typeFilter, maxAmount, minAmount, startDate, endDate, timePeriod);
+        incomeService.createModelForIncomesTemplate(model, user, typeFilter, maxAmount, minAmount, startDate, endDate, timePeriod);
         return "/incomes";
     }
 
@@ -88,17 +91,17 @@ public class IncomeController {
 
     @PutMapping("/update-income-date/{incomeId}")
     public ResponseEntity<String> updateIncomeDate(@PathVariable Long incomeId) {
-//        try {
-//            Expense expense = expenseService.findById(expenseId);
-//            if (expense != null) {
-//                expense.setDate(new Date());
-//                expenseService.saveOrUpdate(expense);
-//                return ResponseEntity.ok("Expense date updated successfully");
-//            } else {
-//                return ResponseEntity.notFound().build();
-//            }
-//        } catch (Exception e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update income date");
-//        }
+        try {
+            Income income = incomeService.findById(incomeId);
+            if (income != null) {
+                income.setDate(new Date());
+                incomeService.saveOrUpdate(income);
+                return ResponseEntity.ok("Income date updated successfully");
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update income date");
+        }
     }
 }

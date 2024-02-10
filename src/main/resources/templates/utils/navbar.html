@@ -31,6 +31,12 @@
                 <li class="nav-item" th:if="${userRole == 'ROLE_USER'}">
                     <a class="nav-link active" aria-current="page" th:href="@{/expense}">Add Expense</a>
                 </li>
+                <li class="nav-item" th:if="${userRole == 'ROLE_USER'}">
+                    <a class="nav-link active" aria-current="page" th:href="@{/incomes}">Income Sources</a>
+                </li>
+                <li class="nav-item" th:if="${userRole == 'ROLE_USER'}">
+                    <a class="nav-link active" aria-current="page" th:href="@{/income}">Add Income</a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" th:href="@{/investing-calculator}">Investing
                         Calculator</a>

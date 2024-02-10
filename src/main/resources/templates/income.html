@@ -27,16 +27,16 @@
         <div class="col-md-8 offset-md-2">
             <div class="card">
                 <div class="card-header">
-                    <h2 class="text-center">Add Expense</h2>
+                    <h2 class="text-center">Add Income</h2>
                 </div>
                 <div th:if="${param.success}" class="alert alert-info">
-                    You have successfully added an Expense!!
+                    You have successfully added an Income!!
                 </div>
                 <div class="card-body">
-                    <form method="post" role="form" th:action="@{/expense/save}" th:object="${expense}">
+                    <form method="post" role="form" th:action="@{/income/save}" th:object="${income}">
                         <div class="form-group mb-3">
                             <label class="form-label" for="name">Name</label>
-                            <input class="form-control" id="name" name="name" placeholder="Enter name of expense"
+                            <input class="form-control" id="name" name="name" placeholder="Enter name of income"
                                    th:field="*{name}" type="text"/>
                             <p th:errors="*{name}" class="text-danger" th:if="${#fields.hasErrors('name')}"></p>
                         </div>
@@ -54,8 +54,8 @@
                             <input class="form-control" id="type" type="text" list="types" th:field="*{type}"
                                    autocomplete="off">
                             <datalist id="types" th:field="*{type}">
-                                <option th:each="expenseType : ${expenseTypes}"
-                                        th:value="${expenseType.name}" th:text="${expenseType.name}"></option>
+                                <option th:each="incomeType : ${incomeTypes}"
+                                        th:value="${incomeType.name}" th:text="${incomeType.name}"></option>
                             </datalist>
                             <p th:errors="*{type}" class="text-danger"
                                th:if="${#fields.hasErrors('type')}"></p>
@@ -69,7 +69,7 @@
                         </div>
 
                         <div class="form-group">
-                            <button class="btn btn-primary" type="submit">Add Expense</button>
+                            <button class="btn btn-primary" type="submit">Add Income</button>
                         </div>
                     </form>
                 </div>
