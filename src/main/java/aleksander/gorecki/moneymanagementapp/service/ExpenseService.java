@@ -17,7 +17,11 @@ public interface ExpenseService {
 
     List<ExpenseDto> findAllPreviousExpensesByUser(User user);
 
+    List<Expense> findAllByBalanceUpdatedAndDateBefore(boolean balanceUpdated, Date date);
+
     Expense create(User user, ExpenseDto expenseDto);
+
+    Expense updateBalanceForExpense(User user, Expense expense);
 
     void saveOrUpdate(Expense expense);
 

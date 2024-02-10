@@ -17,7 +17,11 @@ public interface IncomeService {
 
     List<IncomeDto> findAllPreviousIncomesByUser(User user);
 
+    List<Income> findAllByBalanceUpdatedAndDateBefore(boolean balanceUpdated, Date date);
+
     Income create(User user, IncomeDto incomeDto);
+
+    Income updateBalanceForIncome(User user, Income income);
 
     void saveOrUpdate(Income income);
 

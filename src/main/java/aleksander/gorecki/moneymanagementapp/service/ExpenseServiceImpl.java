@@ -46,6 +46,11 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     @Override
+    public List<Expense> findAllByBalanceUpdatedAndDateBefore(boolean balanceUpdated, Date date) {
+        return expenseRepository.findAllByBalanceUpdatedAndDateBefore(false, new Date());
+    }
+
+    @Override
     @Transactional
     public Expense create(User user, ExpenseDto expenseDto) {
         Date date = expenseDto.getDate() != null ? expenseDto.getDate() : new Date();
@@ -59,20 +64,21 @@ public class ExpenseServiceImpl implements ExpenseService {
                 user,
                 false
         );
-        updateBalanceForExpense(user, expense);
-        return expenseRepository.save(expense);
+        return updateBalanceForExpense(user, expense);
     }
 
-    private void updateBalanceForExpense(User user, Expense expense) {
+    @Override
+    public Expense updateBalanceForExpense(User user, Expense expense) {
         if (expense.getDate().before(new Date())) {
             userService.updateUsersBalance(user, expense.getAmount().negate());
             expense.setBalanceUpdated(true);
         }
+        return expenseRepository.save(expense);
     }
 
 
     private String getExpenseType(User user, String typeName) {
-        ExpenseType expenseType = expenseTypeRepository.findByName(typeName);
+        ExpenseType expenseType = expenseTypeRepository.findByNameAndUser(typeName, user);
         if (expenseType == null) {
             expenseType = createExpenseType(user, typeName);
         }

@@ -10,5 +10,5 @@ public interface IncomeTypeRepository extends JpaRepository<IncomeType, Long> {
 
     List<IncomeType> findAllByUser(User user);
 
-    IncomeType findByName(String name);
+    IncomeType findByNameAndUser(String name, User user);
 }

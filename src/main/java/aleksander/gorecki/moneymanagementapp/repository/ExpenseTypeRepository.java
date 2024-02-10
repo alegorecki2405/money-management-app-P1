@@ -10,5 +10,5 @@ public interface ExpenseTypeRepository extends JpaRepository<ExpenseType, Long> 
 
     List<ExpenseType> findAllByUser(User user);
 
-    ExpenseType findByName(String name);
+    ExpenseType findByNameAndUser(String name, User user);
 }

@@ -46,6 +46,11 @@ public class IncomeServiceImpl implements IncomeService {
     }
 
     @Override
+    public List<Income> findAllByBalanceUpdatedAndDateBefore(boolean balanceUpdated, Date date) {
+        return incomeRepository.findAllByBalanceUpdatedAndDateBefore(false, new Date());
+    }
+
+    @Override
     @Transactional
     public Income create(User user, IncomeDto incomeDto) {
         Date date = incomeDto.getDate() != null ? incomeDto.getDate() : new Date();
@@ -59,19 +64,20 @@ public class IncomeServiceImpl implements IncomeService {
                 user,
                 false
         );
-        updateBalanceForIncome(user, income);
-        return incomeRepository.save(income);
+        return updateBalanceForIncome(user, income);
     }
 
-    private void updateBalanceForIncome(User user, Income income) {
+    @Override
+    public Income updateBalanceForIncome(User user, Income income) {
         if (income.getDate().before(new Date())) {
             userService.updateUsersBalance(user, income.getAmount());
             income.setBalanceUpdated(true);
         }
+        return incomeRepository.save(income);
     }
 
     private String getIncomeType(User user, String typeName) {
-        IncomeType incomeType = incomeTypeRepository.findByName(typeName);
+        IncomeType incomeType = incomeTypeRepository.findByNameAndUser(typeName, user);
         if (incomeType == null) {
             incomeType = createIncomeType(user, typeName);
         }
