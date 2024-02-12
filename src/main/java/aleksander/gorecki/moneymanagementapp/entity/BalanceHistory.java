@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -27,7 +27,7 @@ public class BalanceHistory {
     @ManyToOne
     private User user;
 
-    private LocalDateTime dateTime;
+    private LocalDate dateTime;
 
     private BigDecimal balance;
 

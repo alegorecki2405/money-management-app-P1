@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,7 +76,7 @@ public class User {
         // Create a new BalanceHistory entry
         BalanceHistory balanceChange = new BalanceHistory();
         balanceChange.setUser(this);
-        balanceChange.setDateTime(LocalDateTime.now());
+        balanceChange.setDateTime(LocalDate.now());
         balanceChange.setBalance(this.balance);
         balanceChange.setBalanceChange(amount);
 

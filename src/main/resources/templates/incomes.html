@@ -64,7 +64,7 @@
                     <td th:text="${income.name}"></td>
                     <td th:text="${income.amount}"></td>
                     <td th:text="${income.type}"></td>
-                    <td th:text="${#dates.format(income.date, 'dd-MM-yyyy')}"></td>
+                    <td th:text="${#temporals.format(income.date, 'dd-MM-yyyy')}"></td>
                     <td>
                         <button class="btn btn-primary" th:onclick="payIncome([[${income.id}]])">Pay</button>
                     </td>
@@ -90,7 +90,7 @@
                     <td th:text="${income.name}"></td>
                     <td th:text="${income.amount}"></td>
                     <td th:text="${income.type}"></td>
-                    <td th:text="${#dates.format(income.date, 'dd-MM-yyyy')}"></td>
+                    <td th:text="${#temporals.format(income.date, 'dd-MM-yyyy')}"></td>
                 </tr>
                 </tbody>
             </table>

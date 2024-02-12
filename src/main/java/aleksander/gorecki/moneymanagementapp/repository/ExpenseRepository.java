@@ -4,12 +4,12 @@ import aleksander.gorecki.moneymanagementapp.entity.Expense;
 import aleksander.gorecki.moneymanagementapp.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface ExpenseRepository extends JpaRepository<Expense, Long> {
 
     List<Expense> findAllByUser(User user);
 
-    List<Expense> findAllByBalanceUpdatedAndDateBefore(boolean balanceUpdated, LocalDateTime date);
+    List<Expense> findAllByBalanceUpdatedAndDateBefore(boolean balanceUpdated, LocalDate date);
 }

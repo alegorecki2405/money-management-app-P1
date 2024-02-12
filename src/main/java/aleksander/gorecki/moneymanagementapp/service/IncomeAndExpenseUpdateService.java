@@ -7,7 +7,7 @@ import lombok.Data;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -20,8 +20,8 @@ public class IncomeAndExpenseUpdateService {
 
     @Scheduled(fixedDelay = 1, timeUnit = TimeUnit.MINUTES)
     public void doSomething() {
-        updateExpenses(expenseService.findAllByBalanceUpdatedAndDateBefore(false, LocalDateTime.now()));
-        updateIncomes(incomeService.findAllByBalanceUpdatedAndDateBefore(false, LocalDateTime.now()));
+        updateExpenses(expenseService.findAllByBalanceUpdatedAndDateBefore(false, LocalDate.now()));
+        updateIncomes(incomeService.findAllByBalanceUpdatedAndDateBefore(false, LocalDate.now()));
     }
 
     public void updateIncomes(List<Income> incomes) {

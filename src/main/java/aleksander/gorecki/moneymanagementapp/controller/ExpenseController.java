@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Data
 @Controller
@@ -62,8 +62,8 @@ public class ExpenseController {
                            @RequestParam(required = false) String typeFilter,
                            @RequestParam(required = false) BigDecimal maxAmount,
                            @RequestParam(required = false) BigDecimal minAmount,
-                           @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
-                           @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
+                           @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDate startDate,
+                           @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDate endDate,
                            @RequestParam(required = false) String timePeriod) {
         User user = userService.findUserByEmail(authenticationFacade.getAuth().getName());
         expenseService.createModelForExpensesTemplate(model, user, typeFilter, maxAmount, minAmount, startDate, endDate, timePeriod);
@@ -94,7 +94,7 @@ public class ExpenseController {
         try {
             Expense expense = expenseService.findById(expenseId); // Implement this method in ExpenseService
             if (expense != null) {
-                expense.setDate(LocalDateTime.now()); // Set the expense date to the current date
+                expense.setDate(LocalDate.now()); // Set the expense date to the current date
                 expenseService.saveOrUpdate(expense); // Save the updated expense
                 return ResponseEntity.ok("Expense date updated successfully");
             } else {

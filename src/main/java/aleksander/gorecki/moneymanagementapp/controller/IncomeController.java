@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Data
 @Controller
@@ -62,8 +62,8 @@ public class IncomeController {
                           @RequestParam(required = false) String typeFilter,
                           @RequestParam(required = false) BigDecimal maxAmount,
                           @RequestParam(required = false) BigDecimal minAmount,
-                          @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
-                          @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
+                          @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDate startDate,
+                          @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDate endDate,
                           @RequestParam(required = false) String timePeriod) {
         User user = userService.findUserByEmail(authenticationFacade.getAuth().getName());
         incomeService.createModelForIncomesTemplate(model, user, typeFilter, maxAmount, minAmount, startDate, endDate, timePeriod);
@@ -94,7 +94,7 @@ public class IncomeController {
         try {
             Income income = incomeService.findById(incomeId);
             if (income != null) {
-                income.setDate(LocalDateTime.now());
+                income.setDate(LocalDate.now());
                 incomeService.saveOrUpdate(income);
                 return ResponseEntity.ok("Income date updated successfully");
             } else {

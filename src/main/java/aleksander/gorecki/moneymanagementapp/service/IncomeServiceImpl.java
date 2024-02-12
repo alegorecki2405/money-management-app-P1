@@ -14,8 +14,7 @@ import org.springframework.ui.Model;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,23 +35,23 @@ public class IncomeServiceImpl implements IncomeService {
 
     @Override
     public List<IncomeDto> findAllFutureIncomesByUser(User user) {
-        return filterIncomesByDate(findAllByUser(user), LocalDateTime.now(), true);
+        return filterIncomesByDate(findAllByUser(user), LocalDate.now(), true);
     }
 
     @Override
     public List<IncomeDto> findAllPreviousIncomesByUser(User user) {
-        return filterIncomesByDate(findAllByUser(user), LocalDateTime.now(), false);
+        return filterIncomesByDate(findAllByUser(user), LocalDate.now(), false);
     }
 
     @Override
-    public List<Income> findAllByBalanceUpdatedAndDateBefore(boolean balanceUpdated, LocalDateTime date) {
-        return incomeRepository.findAllByBalanceUpdatedAndDateBefore(false, LocalDateTime.now());
+    public List<Income> findAllByBalanceUpdatedAndDateBefore(boolean balanceUpdated, LocalDate date) {
+        return incomeRepository.findAllByBalanceUpdatedAndDateBefore(false, LocalDate.now());
     }
 
     @Override
     @Transactional
     public Income create(User user, IncomeDto incomeDto) {
-        LocalDateTime date = incomeDto.getDate() != null ? incomeDto.getDate() : LocalDateTime.now();
+        LocalDate date = incomeDto.getDate() != null ? incomeDto.getDate() : LocalDate.now();
         String type = getIncomeType(user, incomeDto.getType());
         Income income = new Income(
                 incomeDto.getId(),
@@ -68,7 +67,7 @@ public class IncomeServiceImpl implements IncomeService {
 
     @Override
     public Income updateBalanceForIncome(User user, Income income) {
-        if (income.getDate().isBefore(LocalDateTime.now())) {
+        if (income.getDate().isBefore(LocalDate.now())) {
             userService.updateUsersBalance(user, income.getAmount());
             income.setBalanceUpdated(true);
         }
@@ -106,26 +105,25 @@ public class IncomeServiceImpl implements IncomeService {
     }
 
     @Override
-    public Model createModelForIncomesTemplate(Model model, User user, String typeFilter, BigDecimal maxAmount, BigDecimal minAmount, LocalDateTime startDate, LocalDateTime endDate, String timePeriod) {
+    public Model createModelForIncomesTemplate(Model model, User user, String typeFilter, BigDecimal maxAmount, BigDecimal minAmount, LocalDate startDate, LocalDate endDate, String timePeriod) {
         model.addAttribute("futureIncomes", filterIncomes(findAllFutureIncomesByUser(user), typeFilter, maxAmount, minAmount, startDate, endDate, timePeriod));
         model.addAttribute("previousIncomes", filterIncomes(findAllPreviousIncomesByUser(user), typeFilter, maxAmount, minAmount, startDate, endDate, timePeriod));
         model.addAttribute("userRole", authenticationFacade.getHighestRole());
         model.addAttribute("typeFilter", typeFilter);
         model.addAttribute("maxAmount", maxAmount);
         model.addAttribute("minAmount", minAmount);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         if (startDate != null) {
-            model.addAttribute("startDate", dateFormat.format(startDate));
+            model.addAttribute("startDate", startDate);
         }
         if (endDate != null) {
-            model.addAttribute("endDate", dateFormat.format(endDate));
+            model.addAttribute("endDate", endDate);
         }
         model.addAttribute("timePeriod", timePeriod);
         model.addAttribute("incomeTypes", findAllTypesByUser(user));
         return model;
     }
 
-    private List<IncomeDto> filterIncomes(List<IncomeDto> incomeDtos, String typeFilter, BigDecimal maxAmount, BigDecimal minAmount, LocalDateTime startDate, LocalDateTime endDate, String timePeriod) {
+    private List<IncomeDto> filterIncomes(List<IncomeDto> incomeDtos, String typeFilter, BigDecimal maxAmount, BigDecimal minAmount, LocalDate startDate, LocalDate endDate, String timePeriod) {
         return incomeDtos.stream()
                 .filter(incomeDto -> isTypeMatch(incomeDto, typeFilter))
                 .filter(incomeDto -> isAmountInRange(incomeDto, maxAmount, minAmount))
@@ -147,21 +145,21 @@ public class IncomeServiceImpl implements IncomeService {
     }
 
     private boolean isFromTimePeriod(IncomeDto incomeDto, String timePeriod) throws ParseException {
-        LocalDateTime now = LocalDateTime.now();
+        LocalDate now = LocalDate.now();
         if (timePeriod != null && !timePeriod.isEmpty()) {
             switch (timePeriod) {
                 case "lastYear":
-                    return isDateInRange(incomeDto, LocalDateTime.now().minusYears(1), now);
+                    return isDateInRange(incomeDto, LocalDate.now().minusYears(1), now);
                 case "lastMonth":
-                    return isDateInRange(incomeDto, LocalDateTime.now().minusMonths(1), now);
+                    return isDateInRange(incomeDto, LocalDate.now().minusMonths(1), now);
                 case "lastWeek":
-                    return isDateInRange(incomeDto, LocalDateTime.now().minusDays(7), now);
+                    return isDateInRange(incomeDto, LocalDate.now().minusDays(7), now);
                 case "nextWeek":
-                    return isDateInRange(incomeDto, LocalDateTime.now().plusDays(7), now);
+                    return isDateInRange(incomeDto, LocalDate.now().plusDays(7), now);
                 case "nextMonth":
-                    return isDateInRange(incomeDto, LocalDateTime.now().plusMonths(1), now);
+                    return isDateInRange(incomeDto, LocalDate.now().plusMonths(1), now);
                 case "nextYear":
-                    return isDateInRange(incomeDto, LocalDateTime.now().plusYears(7), now);
+                    return isDateInRange(incomeDto, LocalDate.now().plusYears(7), now);
             }
         }
         return true;
@@ -176,8 +174,8 @@ public class IncomeServiceImpl implements IncomeService {
                 (minAmount == null || incomeDto.getAmount().compareTo(minAmount) >= 0);
     }
 
-    private boolean isDateInRange(IncomeDto incomeDto, LocalDateTime startDate, LocalDateTime endDate) throws ParseException {
-        LocalDateTime expenseDate = incomeDto.getDate();
+    private boolean isDateInRange(IncomeDto incomeDto, LocalDate startDate, LocalDate endDate) throws ParseException {
+        LocalDate expenseDate = incomeDto.getDate();
         if (startDate != null && endDate != null) {
             return (expenseDate.isAfter(startDate) || expenseDate.isEqual(startDate)) && (expenseDate.isBefore(endDate) || expenseDate.isEqual(endDate));
         }
@@ -196,9 +194,9 @@ public class IncomeServiceImpl implements IncomeService {
                 .collect(Collectors.toList());
     }
 
-    private List<IncomeDto> filterIncomesByDate(List<IncomeDto> incomes, LocalDateTime compareDate, boolean future) {
+    private List<IncomeDto> filterIncomesByDate(List<IncomeDto> incomes, LocalDate compareDate, boolean future) {
         return incomes.stream()
-                .filter(income -> future ? income.getDate().isAfter(compareDate) : income.getDate().isBefore(compareDate))
+                .filter(income -> future ? income.getDate().isAfter(compareDate) : income.getDate().isBefore(compareDate) || income.getDate().isEqual(compareDate))
                 .collect(Collectors.toList());
     }
 
