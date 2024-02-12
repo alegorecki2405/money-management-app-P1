@@ -9,6 +9,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Component
@@ -39,6 +40,7 @@ public class DataInitializer implements CommandLineRunner {
             admin.setName("admin admin");
             admin.setPassword(passwordEncoder.encode("admin"));
             admin.setRoles(List.of(roleRepository.findByName("ROLE_ADMIN")));
+            admin.setBalance(BigDecimal.ZERO);
             userRepository.save(admin);
         }
     }

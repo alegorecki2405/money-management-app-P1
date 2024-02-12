@@ -7,7 +7,7 @@ import aleksander.gorecki.moneymanagementapp.entity.User;
 import org.springframework.ui.Model;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface IncomeService {
@@ -17,7 +17,7 @@ public interface IncomeService {
 
     List<IncomeDto> findAllPreviousIncomesByUser(User user);
 
-    List<Income> findAllByBalanceUpdatedAndDateBefore(boolean balanceUpdated, Date date);
+    List<Income> findAllByBalanceUpdatedAndDateBefore(boolean balanceUpdated, LocalDateTime date);
 
     Income create(User user, IncomeDto incomeDto);
 
@@ -29,5 +29,5 @@ public interface IncomeService {
 
     List<IncomeType> findAllTypesByUser(User user);
 
-    Model createModelForIncomesTemplate(Model model, User user, String typeFilter, BigDecimal maxAmount, BigDecimal minAmount, Date startDate, Date endDate, String timePeriod);
+    Model createModelForIncomesTemplate(Model model, User user, String typeFilter, BigDecimal maxAmount, BigDecimal minAmount, LocalDateTime startDate, LocalDateTime endDate, String timePeriod);
 }

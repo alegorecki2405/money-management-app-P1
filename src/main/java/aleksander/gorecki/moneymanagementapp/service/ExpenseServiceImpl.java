@@ -15,8 +15,7 @@ import org.springframework.ui.Model;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,23 +36,23 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     @Override
     public List<ExpenseDto> findAllFutureExpensesByUser(User user) {
-        return filterExpensesByDate(findAllByUser(user), new Date(), true);
+        return filterExpensesByDate(findAllByUser(user), LocalDateTime.now(), true);
     }
 
     @Override
     public List<ExpenseDto> findAllPreviousExpensesByUser(User user) {
-        return filterExpensesByDate(findAllByUser(user), new Date(), false);
+        return filterExpensesByDate(findAllByUser(user), LocalDateTime.now(), false);
     }
 
     @Override
-    public List<Expense> findAllByBalanceUpdatedAndDateBefore(boolean balanceUpdated, Date date) {
-        return expenseRepository.findAllByBalanceUpdatedAndDateBefore(false, new Date());
+    public List<Expense> findAllByBalanceUpdatedAndDateBefore(boolean balanceUpdated, LocalDateTime date) {
+        return expenseRepository.findAllByBalanceUpdatedAndDateBefore(false, LocalDateTime.now());
     }
 
     @Override
     @Transactional
     public Expense create(User user, ExpenseDto expenseDto) {
-        Date date = expenseDto.getDate() != null ? expenseDto.getDate() : new Date();
+        LocalDateTime date = expenseDto.getDate() != null ? expenseDto.getDate() : LocalDateTime.now();
         String type = getExpenseType(user, expenseDto.getType());
         Expense expense = new Expense(
                 expenseDto.getId(),
@@ -69,7 +68,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     @Override
     public Expense updateBalanceForExpense(User user, Expense expense) {
-        if (expense.getDate().before(new Date())) {
+        if (expense.getDate().isBefore(LocalDateTime.now())) {
             userService.updateUsersBalance(user, expense.getAmount().negate());
             expense.setBalanceUpdated(true);
         }
@@ -108,7 +107,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     @Override
-    public Model createModelForExpensesTemplate(Model model, User user, String typeFilter, BigDecimal maxAmount, BigDecimal minAmount, Date startDate, Date endDate, String timePeriod) {
+    public Model createModelForExpensesTemplate(Model model, User user, String typeFilter, BigDecimal maxAmount, BigDecimal minAmount, LocalDateTime startDate, LocalDateTime endDate, String timePeriod) {
         model.addAttribute("futureExpenses", filterExpenses(findAllFutureExpensesByUser(user), typeFilter, maxAmount, minAmount, startDate, endDate, timePeriod));
         model.addAttribute("previousExpenses", filterExpenses(findAllPreviousExpensesByUser(user), typeFilter, maxAmount, minAmount, startDate, endDate, timePeriod));
         model.addAttribute("userRole", authenticationFacade.getHighestRole());
@@ -127,7 +126,7 @@ public class ExpenseServiceImpl implements ExpenseService {
         return model;
     }
 
-    private List<ExpenseDto> filterExpenses(List<ExpenseDto> expenseDtos, String typeFilter, BigDecimal maxAmount, BigDecimal minAmount, Date startDate, Date endDate, String timePeriod) {
+    private List<ExpenseDto> filterExpenses(List<ExpenseDto> expenseDtos, String typeFilter, BigDecimal maxAmount, BigDecimal minAmount, LocalDateTime startDate, LocalDateTime endDate, String timePeriod) {
         return expenseDtos.stream()
                 .filter(expenseDto -> isTypeMatch(expenseDto, typeFilter))
                 .filter(expenseDto -> isAmountInRange(expenseDto, maxAmount, minAmount))
@@ -149,27 +148,21 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     private boolean isFromTimePeriod(ExpenseDto expenseDto, String timePeriod) throws ParseException {
-        Calendar cal = Calendar.getInstance();
+        LocalDateTime now = LocalDateTime.now();
         if (timePeriod != null && !timePeriod.isEmpty()) {
             switch (timePeriod) {
                 case "lastYear":
-                    cal.add(Calendar.YEAR, -1);
-                    return isDateInRange(expenseDto, cal.getTime(), new Date());
+                    return isDateInRange(expenseDto, LocalDateTime.now().minusYears(1), now);
                 case "lastMonth":
-                    cal.add(Calendar.MONTH, -1);
-                    return isDateInRange(expenseDto, cal.getTime(), new Date());
+                    return isDateInRange(expenseDto, LocalDateTime.now().minusMonths(1), now);
                 case "lastWeek":
-                    cal.add(Calendar.DAY_OF_WEEK, -7);
-                    return isDateInRange(expenseDto, cal.getTime(), new Date());
+                    return isDateInRange(expenseDto, LocalDateTime.now().minusDays(7), now);
                 case "nextWeek":
-                    cal.add(Calendar.DAY_OF_WEEK, 7);
-                    return isDateInRange(expenseDto, new Date(), cal.getTime());
+                    return isDateInRange(expenseDto, LocalDateTime.now().plusDays(7), now);
                 case "nextMonth":
-                    cal.add(Calendar.MONTH, 1);
-                    return isDateInRange(expenseDto, new Date(), cal.getTime());
+                    return isDateInRange(expenseDto, LocalDateTime.now().plusMonths(1), now);
                 case "nextYear":
-                    cal.add(Calendar.YEAR, 1);
-                    return isDateInRange(expenseDto, new Date(), cal.getTime());
+                    return isDateInRange(expenseDto, LocalDateTime.now().plusYears(7), now);
             }
         }
         return true;
@@ -184,21 +177,16 @@ public class ExpenseServiceImpl implements ExpenseService {
                 (minAmount == null || expenseDto.getAmount().compareTo(minAmount) >= 0);
     }
 
-    private boolean isDateInRange(ExpenseDto expenseDto, Date startDate, Date endDate) throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date expenseDate = sdf.parse(sdf.format(expenseDto.getDate()));
+    private boolean isDateInRange(ExpenseDto expenseDto, LocalDateTime startDate, LocalDateTime endDate) throws ParseException {
+        LocalDateTime expenseDate = expenseDto.getDate();
         if (startDate != null && endDate != null) {
-            Date start = sdf.parse(sdf.format(startDate));
-            Date end = sdf.parse(sdf.format(endDate));
-            return (expenseDate.after(start) || expenseDate.equals(start)) && (expenseDate.before(end) || expenseDate.equals(end));
+            return (expenseDate.isAfter(startDate) || expenseDate.isEqual(startDate)) && (expenseDate.isBefore(endDate) || expenseDate.isEqual(endDate));
         }
         if (startDate != null) {
-            Date start = sdf.parse(sdf.format(startDate));
-            return expenseDate.after(start) || expenseDate.equals(start);
+            return expenseDate.isAfter(startDate) || expenseDate.isEqual(startDate);
         }
         if (endDate != null) {
-            Date end = sdf.parse(sdf.format(endDate));
-            return expenseDate.before(end) || expenseDate.equals(end);
+            return expenseDate.isBefore(endDate) || expenseDate.isEqual(endDate);
         }
         return true;
     }
@@ -209,9 +197,9 @@ public class ExpenseServiceImpl implements ExpenseService {
                 .collect(Collectors.toList());
     }
 
-    private List<ExpenseDto> filterExpensesByDate(List<ExpenseDto> expenses, Date compareDate, boolean future) {
+    private List<ExpenseDto> filterExpensesByDate(List<ExpenseDto> expenses, LocalDateTime compareDate, boolean future) {
         return expenses.stream()
-                .filter(expense -> future ? expense.getDate().after(compareDate) : expense.getDate().before(compareDate))
+                .filter(expense -> future ? expense.getDate().isAfter(compareDate) : expense.getDate().isBefore(compareDate))
                 .collect(Collectors.toList());
     }
 

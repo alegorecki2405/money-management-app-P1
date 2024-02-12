@@ -7,7 +7,7 @@ import aleksander.gorecki.moneymanagementapp.entity.User;
 import org.springframework.ui.Model;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ExpenseService {
@@ -17,7 +17,7 @@ public interface ExpenseService {
 
     List<ExpenseDto> findAllPreviousExpensesByUser(User user);
 
-    List<Expense> findAllByBalanceUpdatedAndDateBefore(boolean balanceUpdated, Date date);
+    List<Expense> findAllByBalanceUpdatedAndDateBefore(boolean balanceUpdated, LocalDateTime date);
 
     Expense create(User user, ExpenseDto expenseDto);
 
@@ -29,6 +29,6 @@ public interface ExpenseService {
 
     List<ExpenseType> findAllTypesByUser(User user);
 
-    Model createModelForExpensesTemplate(Model model, User user, String typeFilter, BigDecimal maxAmount, BigDecimal minAmount, Date startDate, Date endDate, String timePeriod);
+    Model createModelForExpensesTemplate(Model model, User user, String typeFilter, BigDecimal maxAmount, BigDecimal minAmount, LocalDateTime startDate, LocalDateTime endDate, String timePeriod);
 }
 

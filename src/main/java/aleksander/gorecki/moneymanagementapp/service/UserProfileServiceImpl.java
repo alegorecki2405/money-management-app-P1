@@ -2,7 +2,6 @@ package aleksander.gorecki.moneymanagementapp.service;
 
 import aleksander.gorecki.moneymanagementapp.config.AuthenticationFacade;
 import aleksander.gorecki.moneymanagementapp.dto.ExpenseDto;
-import aleksander.gorecki.moneymanagementapp.dto.FinanceInterface;
 import aleksander.gorecki.moneymanagementapp.dto.IncomeDto;
 import aleksander.gorecki.moneymanagementapp.entity.BalanceHistory;
 import aleksander.gorecki.moneymanagementapp.entity.User;
@@ -11,8 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -49,15 +46,15 @@ public class UserProfileServiceImpl implements UserProfileService {
         for (int i = 12; i >= 0; i--) {
             LocalDateTime firstDayOfEachMonth = d.minusMonths(i).withDayOfMonth(1).withHour(0);
             LocalDateTime firstDayOfNextMonth = d.minusMonths(i - 1).withDayOfMonth(1).withHour(0);
-            expensesPerMonth.put(d.getMonth().name(),
-                    expenses.stream().filter(expenseDto ->
-                                    isDateInRangeForLocalDT(expenseDto, firstDayOfEachMonth, firstDayOfNextMonth))
-                            .collect(Collectors.toList()));
-
-            incomesPerMonth.put(d.getMonth().name(),
-                    incomes.stream().filter(incomeDto ->
-                                    isDateInRangeForLocalDT(incomeDto, firstDayOfEachMonth, firstDayOfNextMonth))
-                            .collect(Collectors.toList()));
+//            expensesPerMonth.put(d.getMonth().name(),
+//                    expenses.stream().filter(expenseDto ->
+//                                    isDateInRangeForLocalDT(expenseDto, firstDayOfEachMonth, firstDayOfNextMonth))
+//                            .collect(Collectors.toList()));
+//
+//            incomesPerMonth.put(d.getMonth().name(),
+//                    incomes.stream().filter(incomeDto ->
+//                                    isDateInRangeForLocalDT(incomeDto, firstDayOfEachMonth, firstDayOfNextMonth))
+//                            .collect(Collectors.toList()));
         }
     }
 
@@ -82,10 +79,10 @@ public class UserProfileServiceImpl implements UserProfileService {
         return (ldt.isEqual(startDate) || ldt.isAfter(startDate)) && (ldt.isEqual(endDate) || ldt.isBefore(endDate));
     }
 
-    private boolean isDateInRangeForLocalDT(FinanceInterface element, LocalDateTime startDate, LocalDateTime endDate) {
-        Date start = Date.from(startDate.toInstant(ZoneId.systemDefault().getRules().getOffset(startDate)));
-        Date end = Date.from(endDate.toInstant(ZoneId.systemDefault().getRules().getOffset(endDate)));
-        Date expenseDate = element.getDate();
-        return (expenseDate.after(start) || expenseDate.equals(start)) && (expenseDate.before(end) || expenseDate.equals(end));
-    }
+//    private boolean isDateInRangeForLocalDT(FinanceInterface element, LocalDateTime startDate, LocalDateTime endDate) {
+//        LocalDateTime start = Date.from(startDate.toInstant(ZoneId.systemDefault().getRules().getOffset(startDate)));
+//        LocalDateTime end = Date.from(endDate.toInstant(ZoneId.systemDefault().getRules().getOffset(endDate)));
+//        LocalDateTime expenseDate = element.getDate();
+//        return (expenseDate.after(start) || expenseDate.equals(start)) && (expenseDate.before(end) || expenseDate.equals(end));
+//    }
 }

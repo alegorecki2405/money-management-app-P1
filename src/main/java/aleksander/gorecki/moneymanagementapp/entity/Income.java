@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -17,7 +17,7 @@ import java.util.Date;
 @Table(name = "incomes")
 public class Income extends FinanceElement {
     @Builder
-    public Income(Long id, String name, BigDecimal amount, String type, Date date, User user, boolean balanceUpdated) {
+    public Income(Long id, String name, BigDecimal amount, String type, LocalDateTime date, User user, boolean balanceUpdated) {
         super(id, name, amount, type, date, user, balanceUpdated);
     }
 }

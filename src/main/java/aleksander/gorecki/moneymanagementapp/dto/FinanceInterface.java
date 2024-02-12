@@ -1,7 +1,7 @@
 package aleksander.gorecki.moneymanagementapp.dto;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public interface FinanceInterface {
-    Date getDate();
+    LocalDateTime getDate();
 }
