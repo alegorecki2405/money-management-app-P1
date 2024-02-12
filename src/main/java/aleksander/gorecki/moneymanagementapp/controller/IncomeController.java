@@ -45,15 +45,16 @@ public class IncomeController {
     @PostMapping("/income/save")
     public String createIncome(@Valid @ModelAttribute("income") IncomeDto incomeDto,
                                BindingResult result,
-                               RedirectAttributes redirectAttributes) {
+                               RedirectAttributes redirectAttributes,
+                               Model model) {
         if (result.hasErrors()) {
+            model.addAttribute("userRole", authenticationFacade.getHighestRole());
             return "income";
         }
 
         User user = userService.findUserByEmail(authenticationFacade.getAuth().getName());
         incomeService.create(user, incomeDto);
         redirectAttributes.addFlashAttribute("successMessage", "Income added successfully");
-        //TODO: make it redirect with propper user ROLE
         return "redirect:/income";
     }
 
