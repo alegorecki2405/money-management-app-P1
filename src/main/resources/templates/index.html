@@ -14,6 +14,14 @@
             crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
             crossorigin="anonymous"></script>
+    <script th:src="@{/js/userProfile.js}"></script>
+    <script th:inline="javascript">
+        window.onload = function () {
+            var balanceHistory = [[${firstDiagram}]];
+            createFirstDiagram(balanceHistory);
+        }
+    </script>
+
     <link th:href="@{/css/style.css}" rel="stylesheet">
 </head>
 <body>
@@ -30,7 +38,8 @@
     </div>
     <div class="row">
         <div class="d-inline col-md-6 border border-primary">
-
+            <div id="chartContainer" style="height: 370px; width: 100%;"></div>
+            <script src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
         </div>
         <div class="d-inline col-md-6 border border-primary">asdfasdfasd</div>
     </div>

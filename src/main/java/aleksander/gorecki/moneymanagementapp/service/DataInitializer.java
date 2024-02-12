@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 @Component
@@ -19,6 +20,7 @@ public class DataInitializer implements CommandLineRunner {
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserService userService;
 
     @Override
     public void run(String... args) {
@@ -42,6 +44,19 @@ public class DataInitializer implements CommandLineRunner {
             admin.setRoles(List.of(roleRepository.findByName("ROLE_ADMIN")));
             admin.setBalance(BigDecimal.ZERO);
             userRepository.save(admin);
+        }
+
+        if (userRepository.findByEmail("alegorecki@gmail.com") == null) {
+            User user = new User();
+            user.setEmail("alegorecki@gmail.com");
+            user.setName("Aleksander Górecki");
+            user.setPassword(passwordEncoder.encode("Q"));
+            user.setRoles(List.of(roleRepository.findByName("ROLE_USER")));
+            user.setBalance(BigDecimal.valueOf(1000));
+            user.updateBalance(BigDecimal.ZERO, LocalDate.now().minusYears(1));
+            User saved = userRepository.save(user);
+            userService.defaultExpeneseTypes(saved);
+            userService.defaultIncomeTypes(saved);
         }
     }
 }

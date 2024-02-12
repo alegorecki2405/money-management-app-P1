@@ -17,5 +17,9 @@ public interface UserService {
     void delete(User user);
 
     void updateUsersBalance(User user, BigDecimal amount, LocalDate date);
+
+    void defaultExpeneseTypes(User user);
+
+    void defaultIncomeTypes(User user);
 }
 
