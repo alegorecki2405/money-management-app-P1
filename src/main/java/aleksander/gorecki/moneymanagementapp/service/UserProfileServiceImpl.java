@@ -27,7 +27,10 @@ public class UserProfileServiceImpl implements UserProfileService {
         model.addAttribute("userRole", authenticationFacade.getHighestRole());
         User user = userService.findUserByEmail(authenticationFacade.getAuth().getName());
         if (user != null) {
-            model.addAttribute("firstDiagram", lastYearByMonthLostGain(user));
+            HashMap<String, BigDecimal> balancesPerMonth = lastYearByMonthLostGain(user);
+            model.addAttribute("firstDiagram", balancesPerMonth);
+            model.addAttribute("currentBalance", user.getBalance());
+            model.addAttribute("lastMonthBalance", getLastBalanceOfPreviousMonth(user));
         }
     }
 
@@ -47,11 +50,23 @@ public class UserProfileServiceImpl implements UserProfileService {
 
             balancesPerMonth.put(key, monthValue);
         }
+        System.out.println(balancesPerMonth);
         return balancesPerMonth;
     }
 
     private boolean isDateInRangeForBalanceHistory(BalanceHistory balanceHistory, LocalDate startDate, LocalDate endDate) {
         LocalDate ldt = balanceHistory.getDateTime();
         return (ldt.isEqual(startDate) || ldt.isAfter(startDate)) && (ldt.isEqual(endDate) || ldt.isBefore(endDate));
+    }
+
+    private BigDecimal getLastBalanceOfPreviousMonth(User user) {
+        List<BalanceHistory> balanceHistories = user.getBalanceHistory();
+        BalanceHistory latest = balanceHistories.get(0);
+        for (int i = 0; i <= balanceHistories.size() - 1; i++) {
+            if (balanceHistories.get(i).getDateTime().isAfter(latest.getDateTime()) && balanceHistories.get(i).getDateTime().isBefore(LocalDate.now().withDayOfMonth(1))) {
+                latest = balanceHistories.get(i);
+            }
+        }
+        return latest.getBalance();
     }
 }
