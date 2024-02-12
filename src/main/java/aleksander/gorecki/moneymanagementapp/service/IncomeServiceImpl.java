@@ -67,8 +67,8 @@ public class IncomeServiceImpl implements IncomeService {
 
     @Override
     public Income updateBalanceForIncome(User user, Income income) {
-        if (income.getDate().isBefore(LocalDate.now())) {
-            userService.updateUsersBalance(user, income.getAmount());
+        if (income.getDate().isBefore(LocalDate.now()) || income.getDate().isEqual(LocalDate.now())) {
+            userService.updateUsersBalance(user, income.getAmount(), income.getDate());
             income.setBalanceUpdated(true);
         }
         return incomeRepository.save(income);

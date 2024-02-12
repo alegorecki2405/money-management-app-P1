@@ -69,14 +69,14 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<BalanceHistory> balanceHistory;
 
-    public void updateBalance(BigDecimal amount) {
+    public void updateBalance(BigDecimal amount, LocalDate date) {
         // Update the balance field
         this.balance = this.balance.add(amount);
 
         // Create a new BalanceHistory entry
         BalanceHistory balanceChange = new BalanceHistory();
         balanceChange.setUser(this);
-        balanceChange.setDateTime(LocalDate.now());
+        balanceChange.setDateTime(date);
         balanceChange.setBalance(this.balance);
         balanceChange.setBalanceChange(amount);
 

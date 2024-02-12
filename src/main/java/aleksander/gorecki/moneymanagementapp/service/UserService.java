@@ -4,6 +4,7 @@ import aleksander.gorecki.moneymanagementapp.dto.UserDto;
 import aleksander.gorecki.moneymanagementapp.entity.User;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface UserService {
@@ -15,6 +16,6 @@ public interface UserService {
 
     void delete(User user);
 
-    void updateUsersBalance(User user, BigDecimal amount);
+    void updateUsersBalance(User user, BigDecimal amount, LocalDate date);
 }
 

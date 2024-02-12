@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -75,8 +76,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateUsersBalance(User user, BigDecimal amount) {
-        user.updateBalance(amount);
+    public void updateUsersBalance(User user, BigDecimal amount, LocalDate date) {
+        user.updateBalance(amount, date);
         userRepository.save(user);
     }
 
