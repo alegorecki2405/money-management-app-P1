@@ -76,8 +76,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUsersBalance(User user, BigDecimal amount) {
-        BigDecimal balance = user.getBalance().add(amount);
-        user.setBalance(balance);
+        user.updateBalance(amount);
         userRepository.save(user);
     }
 

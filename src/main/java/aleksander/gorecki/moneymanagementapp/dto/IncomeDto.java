@@ -14,7 +14,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class IncomeDto {
+public class IncomeDto implements FinanceInterface {
     private Long id;
     @NotEmpty(message = "Name should not be empty")
     private String name;

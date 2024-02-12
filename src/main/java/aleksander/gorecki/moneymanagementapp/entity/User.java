@@ -18,6 +18,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,4 +65,25 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<IncomeType> incomeTypes;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<BalanceHistory> balanceHistory;
+
+    public void updateBalance(BigDecimal amount) {
+        // Update the balance field
+        this.balance = this.balance.add(amount);
+
+        // Create a new BalanceHistory entry
+        BalanceHistory balanceChange = new BalanceHistory();
+        balanceChange.setUser(this);
+        balanceChange.setDateTime(LocalDateTime.now());
+        balanceChange.setBalance(this.balance);
+        balanceChange.setBalanceChange(amount);
+
+        // Add the new BalanceHistory entry to the list
+        if (this.balanceHistory == null) {
+            this.balanceHistory = new ArrayList<>();
+        }
+        this.balanceHistory.add(balanceChange);
+    }
 }
