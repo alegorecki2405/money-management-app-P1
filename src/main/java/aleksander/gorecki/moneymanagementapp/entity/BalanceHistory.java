@@ -29,7 +29,5 @@ public class BalanceHistory {
 
     private LocalDate dateTime;
 
-    private BigDecimal balance;
-
     private BigDecimal balanceChange;
 }

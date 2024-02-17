@@ -77,13 +77,12 @@ public class User {
         BalanceHistory balanceChange = new BalanceHistory();
         balanceChange.setUser(this);
         balanceChange.setDateTime(date);
-        balanceChange.setBalance(this.balance);
         balanceChange.setBalanceChange(amount);
 
-        // Add the new BalanceHistory entry to the list
         if (this.balanceHistory == null) {
             this.balanceHistory = new ArrayList<>();
         }
+
         this.balanceHistory.add(balanceChange);
     }
 }

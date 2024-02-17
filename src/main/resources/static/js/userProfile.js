@@ -21,8 +21,6 @@ function createFirstDiagram(balanceHistory) {
         },
         data: [{
             type: "column",
-            showInLegend: true,
-            legendMarkerColor: "grey",
             dataPoints: data
         }]
     });

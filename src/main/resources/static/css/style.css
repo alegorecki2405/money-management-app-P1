@@ -71,3 +71,18 @@
         display: none;
     }
 }
+
+.balance {
+    font-size: 5vw;
+}
+
+#balanceDisplayPositive {
+    color: forestgreen;
+}
+
+#balanceDisplayNegative {
+    color: red;
+}
+
+#balanceDisplayNeutral {
+}

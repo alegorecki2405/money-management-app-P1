@@ -31,25 +31,37 @@
 <br/><br/>
 
 <div class="container-fluid">
-    <!--    <div th:if="${userRole == 'ROLE_USER' || userRole == 'ROLE_ANONYMOUS'}" class="row">-->
+    <div th:if="${userRole == 'ROLE_USER'}" class="row">
 
-    <div class="row">
-        <div class="d-inline col-md-12 border border-primary">dsafjlasjdf</div>
-    </div>
-    <div class="row">
-        <div class="d-inline col-md-6 border border-primary">
-            <div id="chartContainer" style="height: 370px; width: 100%;"></div>
-            <script src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
+        <div class="row">
+            <div class="d-inline col-md-12 border border-primary">dsafjlasjdf</div>
         </div>
-        <div class="d-inline col-md-6 border border-primary">
-            <h1 th:text="${balance}">BALANCE: </h1>
+        <div class="row">
+            <div class="d-inline col-md-6 border border-primary">
+                <div id="chartContainer" style="height: 370px; width: 100%;"></div>
+                <script src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
+            </div>
+            <div class="d-flex justify-content-center align-items-center col-md-6 border border-primary">
+                <h1 class="balance" th:if="${percentageChange < 0}">
+                    <span th:text="${currentBalance}"></span>
+                    <span style="color: red">&#8595;</span>
+                    <span id="balanceDisplayNegative" th:text="${percentageChange}"></span>
+                    <span style="color: red">%</span>
+                </h1>
+                <h1 class="balance" th:if="${percentageChange > 0}">
+                    <span th:text="${currentBalance}"></span>
+                    <span style="color: forestgreen">&#8593;</span>
+                    <span id="balanceDisplayPositive" th:text="${percentageChange}"></span>
+                    <span style="color: forestgreen">%</span>
+                </h1>
+                <h1 class="balance" th:if="${percentageChange == 0}"><span th:text="${currentBalance}"></span></h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="d-inline col-md-6 border border-primary">dsafjlasjdf</div>
+            <div class="d-inline col-md-6 border border-primary">asdfasdfasd</div>
         </div>
     </div>
-    <div class="row">
-        <div class="d-inline col-md-6 border border-primary">dsafjlasjdf</div>
-        <div class="d-inline col-md-6 border border-primary">asdfasdfasd</div>
-    </div>
-    <!--    </div>-->
 </div>
 
 </body>
