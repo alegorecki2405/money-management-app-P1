@@ -27,39 +27,82 @@
 <body>
 
 <div th:replace="~{utils/navbar :: navbar}"></div>
+<div class="container-fluid container-sizing">
+    <div th:if="${userRole == 'ROLE_USER'}" class="row h-100">
+        <div class="d-inline col-md-6  h-50">
+            <div class="row h-100">
+                <div class="d-flex col-md-12 justify-content-center title-box">
+                    <h3 class="title-of-element">Last year resume changes</h3>
+                </div>
+                <div id="chartContainer">
 
-<br/><br/>
-
-<div class="container-fluid">
-    <div th:if="${userRole == 'ROLE_USER'}" class="row">
-
-        <div class="row">
-            <div class="d-inline col-md-12 border border-primary">dsafjlasjdf</div>
-        </div>
-        <div class="row">
-            <div class="d-inline col-md-6 border border-primary">
-                <div id="chartContainer" style="height: 370px; width: 100%;"></div>
+                </div>
                 <script src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
             </div>
-            <div class="d-flex justify-content-center align-items-center col-md-6 border border-primary">
-                <h1 class="balance" th:if="${percentageChange < 0}">
-                    <span th:text="${currentBalance}"></span>
-                    <span style="color: red">&#8595;</span>
-                    <span id="balanceDisplayNegative" th:text="${percentageChange}"></span>
-                    <span style="color: red">%</span>
-                </h1>
-                <h1 class="balance" th:if="${percentageChange > 0}">
-                    <span th:text="${currentBalance}"></span>
-                    <span style="color: forestgreen">&#8593;</span>
-                    <span id="balanceDisplayPositive" th:text="${percentageChange}"></span>
-                    <span style="color: forestgreen">%</span>
-                </h1>
-                <h1 class="balance" th:if="${percentageChange == 0}"><span th:text="${currentBalance}"></span></h1>
+        </div>
+        <div class="d-flex col-md-6 justify-content-center align-items-center h-50">
+            <div class="row h-100">
+                <div class="d-flex col-md-12 justify-content-center title-box">
+                    <h3 class="title-of-element">Current balance</h3>
+                </div>
+                <div class="d-flex col-md-12 justify-content-center">
+                    <div th:if="${percentageChange < 0}">
+                        <h1 class="balance">
+                            <span th:text="${currentBalance}"></span>
+                            zł
+                        </h1>
+                        <h3>
+                            <span style="color: red">&#8595;</span>
+                            <span id="balanceDisplayNegative" th:text="${percentageChange}"></span>
+                            <span style="color: red">%</span>
+                        </h3>
+                    </div>
+                    <div th:if="${percentageChange > 0}">
+                        <h1 class="balance">
+                            <span th:text="${currentBalance}"></span>
+                            zł
+                        </h1>
+                        <h3>
+                            <span style="color: forestgreen">&#8593;</span>
+                            <span id="balanceDisplayPositive" th:text="${percentageChange}"></span>
+                            <span style="color: forestgreen">%</span>
+                        </h3>
+                    </div>
+                    <h1 class="balance" th:if="${percentageChange == 0}"><span th:text="${currentBalance}"></span></h1>
+                </div>
             </div>
         </div>
-        <div class="row">
-            <div class="d-inline col-md-6 border border-primary">dsafjlasjdf</div>
-            <div class="d-inline col-md-6 border border-primary">asdfasdfasd</div>
+        <div class="d-inline col-md-6  h-50">
+            <div class="row h-100">
+                <div class="d-flex col-md-12 justify-content-center title-box">
+                    <h3 class="title-of-element">Per period expenses and incomes </h3>
+                </div>
+                <div class="d-flex col-md-4  justify-content-center align-items-center income">
+                    <p>Last Year: +<span th:text="${incomeLastYear}"></span> zł</p>
+                </div>
+                <div class="d-flex col-md-4  justify-content-center align-items-center income">
+                    <p>Last Month: +<span th:text="${incomeLastMonth}"></span> zł</p>
+                </div>
+                <div class="d-flex col-md-4  justify-content-center align-items-center income">
+                    <p>Last Week: +<span th:text="${incomeLastWeek}"></span> zł</p>
+                </div>
+                <div class="d-flex col-md-4  justify-content-center align-items-center expense">
+                    <p>Last Year: <span th:text="${expenseLastYear}"></span> zł</p>
+                </div>
+                <div class="d-flex col-md-4  justify-content-center align-items-center expense">
+                    <p>Last Month: <span th:text="${expenseLastMonth}"></span> zł</p>
+                </div>
+                <div class="d-flex col-md-4  justify-content-center align-items-center expense">
+                    <p>Last Week: <span th:text="${expenseLastWeek}"></span> zł</p>
+                </div>
+            </div>
+        </div>
+        <div class="d-inline col-md-6  h-50 justify-content-center">
+            <div class="row h-100">
+                <div class="d-flex col-md-12 justify-content-center title-box">
+                    <h3 class="title-of-element">Recent operations</h3>
+                </div>
+            </div>
         </div>
     </div>
 </div>

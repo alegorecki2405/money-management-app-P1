@@ -34,6 +34,7 @@ public class UserProfileServiceImpl implements UserProfileService {
             BigDecimal balance = user.getBalance();
             model.addAttribute("currentBalance", balance.toString());
             model.addAttribute("percentageChange", getPercentageDifference(balance, getChangeInThisMonth(user)).stripTrailingZeros());
+            getAmountsAddedAndSubtractedPerPeriod(model, user);
         }
     }
 
@@ -73,5 +74,18 @@ public class UserProfileServiceImpl implements UserProfileService {
     private BigDecimal getPercentageDifference(BigDecimal current, BigDecimal change) {
         BigDecimal previous = current.subtract(change);
         return current.subtract(previous).divide(previous, 4, RoundingMode.CEILING).multiply(BigDecimal.valueOf(100));
+    }
+
+    private void getAmountsAddedAndSubtractedPerPeriod(Model model, User user) {
+        List<BalanceHistory> balanceHistories = user.getBalanceHistory();
+        List<BalanceHistory> expenses = balanceHistories.stream().filter(balanceHistory -> balanceHistory.getBalanceChange().compareTo(BigDecimal.ZERO) < 0).toList();
+        List<BalanceHistory> incomes = balanceHistories.stream().filter(balanceHistory -> balanceHistory.getBalanceChange().compareTo(BigDecimal.ZERO) > 0).toList();
+
+        model.addAttribute("incomeLastWeek", getValueFromPeriod(incomes, LocalDate.now().minusDays(7), LocalDate.now()));
+        model.addAttribute("incomeLastMonth", getValueFromPeriod(incomes, LocalDate.now().minusMonths(1), LocalDate.now()));
+        model.addAttribute("incomeLastYear", getValueFromPeriod(incomes, LocalDate.now().minusYears(1), LocalDate.now()));
+        model.addAttribute("expenseLastWeek", getValueFromPeriod(expenses, LocalDate.now().minusDays(7), LocalDate.now()));
+        model.addAttribute("expenseLastMonth", getValueFromPeriod(expenses, LocalDate.now().minusMonths(1), LocalDate.now()));
+        model.addAttribute("expenseLastYear", getValueFromPeriod(expenses, LocalDate.now().minusYears(1), LocalDate.now()));
     }
 }

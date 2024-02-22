@@ -16,9 +16,6 @@ function createFirstDiagram(balanceHistory) {
     var chart = new CanvasJS.Chart("chartContainer", {
         animationEnabled: true,
         theme: "light2",
-        title: {
-            text: "Per Month Resume Change"
-        },
         data: [{
             type: "column",
             dataPoints: data

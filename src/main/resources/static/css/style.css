@@ -51,6 +51,22 @@
     datalist {
         display: none;
     }
+
+    .balance {
+        font-size: 5vh;
+    }
+
+    .income {
+        font-size: 5vw;
+    }
+
+    .expense {
+        font-size: 5vw;
+    }
+
+    .title-of-element {
+        font-size: 3vh;
+    }
 }
 
 @media only screen and (min-width: 601px) {
@@ -70,10 +86,34 @@
     datalist {
         display: none;
     }
+
+    .balance {
+        font-size: 6vw;
+    }
+
+
+    .income {
+        font-size: 2vw;
+        padding-left: 3vw;
+    }
+
+    .expense {
+        font-size: 2vw;
+        padding-left: 3vw;
+    }
+
+    .title-of-element {
+        font-size: 2vw;
+    }
 }
 
-.balance {
-    font-size: 5vw;
+html, body {
+    height: 100%;
+}
+
+.container-sizing {
+    height: 90%;
+    padding: 30px;
 }
 
 #balanceDisplayPositive {
@@ -85,4 +125,24 @@
 }
 
 #balanceDisplayNeutral {
+}
+
+.income {
+    color: forestgreen;
+    background-color: lightgreen;
+}
+
+.expense {
+    color: darkred;
+    background-color: lightcoral;
+}
+
+#chartContainer {
+    height: 34vh;
+}
+
+.title-box {
+    background-color: #212529;
+    color: white;
+    height: 7vh;
 }
