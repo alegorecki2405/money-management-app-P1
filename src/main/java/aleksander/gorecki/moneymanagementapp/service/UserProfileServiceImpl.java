@@ -36,7 +36,6 @@ public class UserProfileServiceImpl implements UserProfileService {
             model.addAttribute("currentBalance", balance.toString());
             model.addAttribute("percentageChange", getPercentageDifference(balance, getChangeInThisMonth(user)).stripTrailingZeros());
             getAmountsAddedAndSubtractedPerPeriod(model, user);
-            //TODO: ogarnac
             getLastOperations(user, model);
         }
     }
