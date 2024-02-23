@@ -99,23 +99,40 @@
         </div>
         <div class="d-inline col-md-6  h-50 justify-content-center ">
             <div class="row h-100 justify-content-center p-1">
-                <div class="d-flex col-md-12 justify-content-center title-box mb-2">
+                <div class="d-flex col-md-12 justify-content-center title-box">
                     <h3 class="title-of-element">Recent operations</h3>
                 </div>
-                <table class="table table-bordered table-hover mt-3">
-                    <thead class="table-dark">
-                    <tr>
-                        <th>Name</th>
-                        <th>Amount</th>
-                        <th>Date</th>
-                    </tr>
-                    </thead>
+                <table class="table table-bordered table-hover" style="margin-top: 2.8vh">
+                    <!--                    <thead class="table-dark">-->
+                    <!--                    <tr>-->
+                    <!--                        <th>Name</th>-->
+                    <!--                        <th>Amount</th>-->
+                    <!--                        <th>Date</th>-->
+                    <!--                    </tr>-->
+                    <!--                    </thead>-->
                     <tbody class="small-table-profile">
                     <tr th:each="operation : ${lastOperations}">
-                        <td th:text="${operation.name}"></td>
-                        <td th:text="${operation.balanceChange}"></td>
-                        <td th:text="${#temporals.format(operation.dateTime, 'dd-MM-yyyy')}"></td>
+                        <td th:if="${operation.balanceChange < 0}" style="background-color: lightcoral; color: red"
+                            th:text="${operation.name}"></td>
+                        <td th:if="${operation.balanceChange < 0}" style="background-color: lightcoral; color: red"
+                            th:text="${operation.balanceChange}"></td>
+                        <td th:if="${operation.balanceChange < 0}" style="background-color: lightcoral; color: red"
+                            th:text="${#temporals.format(operation.dateTime, 'dd-MM-yyyy')}"></td>
+                        <td th:if="${operation.balanceChange > 0}"
+                            style="background-color: lightgreen; color: forestgreen" th:text="${operation.name}"></td>
+                        <td th:if="${operation.balanceChange > 0}"
+                            style="background-color: lightgreen; color: forestgreen"
+                            th:text="${operation.balanceChange}"></td>
+                        <td th:if="${operation.balanceChange > 0}"
+                            style="background-color: lightgreen; color: forestgreen"
+                            th:text="${#temporals.format(operation.dateTime, 'dd-MM-yyyy')}"></td>
                     </tr>
+                    <!--                    <tr th:if="${operation.balanceChange > 0}" style="background-color: lightgreen; color: forestgreen"-->
+                    <!--                        th:each="operation : ${lastOperations}">-->
+                    <!--                        <td th:text="${operation.name}"></td>-->
+                    <!--                        <td th:text="${operation.balanceChange}"></td>-->
+                    <!--                        <td th:text="${#temporals.format(operation.dateTime, 'dd-MM-yyyy')}"></td>-->
+                    <!--                    </tr>-->
                     </tbody>
                 </table>
             </div>

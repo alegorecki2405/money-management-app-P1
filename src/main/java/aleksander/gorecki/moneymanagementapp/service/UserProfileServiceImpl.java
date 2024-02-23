@@ -1,6 +1,7 @@
 package aleksander.gorecki.moneymanagementapp.service;
 
 import aleksander.gorecki.moneymanagementapp.config.AuthenticationFacade;
+import aleksander.gorecki.moneymanagementapp.dto.BalanceHistoryDto;
 import aleksander.gorecki.moneymanagementapp.entity.BalanceHistory;
 import aleksander.gorecki.moneymanagementapp.entity.User;
 import lombok.Data;
@@ -11,10 +12,11 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Data
 @Service
@@ -96,7 +98,8 @@ public class UserProfileServiceImpl implements UserProfileService {
         if (balanceHistories.size() - 8 >= 0) {
             balanceHistories = balanceHistories.subList(balanceHistories.size() - 8, balanceHistories.size());
         }
-
-        model.addAttribute("lastOperations", balanceHistories.stream().map(BalanceHistory::mapToDto).collect(Collectors.toList()));
+        List<BalanceHistoryDto> reversed = new ArrayList<>(balanceHistories.stream().map(BalanceHistory::mapToDto).toList());
+        Collections.reverse(reversed);
+        model.addAttribute("lastOperations", reversed);
     }
 }
