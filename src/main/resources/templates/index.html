@@ -54,7 +54,7 @@
                         <h3>
                             <span style="color: red">&#8595;</span>
                             <span id="balanceDisplayNegative" th:text="${percentageChange}"></span>
-                            <span style="color: red">%</span>
+                            <span style="color: red">% </span>
                         </h3>
                     </div>
                     <div th:if="${percentageChange > 0}">
@@ -65,7 +65,7 @@
                         <h3>
                             <span style="color: forestgreen">&#8593;</span>
                             <span id="balanceDisplayPositive" th:text="${percentageChange}"></span>
-                            <span style="color: forestgreen">%</span>
+                            <span style="color: forestgreen">% </span>
                         </h3>
                     </div>
                     <h1 class="balance" th:if="${percentageChange == 0}"><span th:text="${currentBalance}"></span></h1>

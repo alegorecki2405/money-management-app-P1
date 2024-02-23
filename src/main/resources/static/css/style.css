@@ -54,6 +54,7 @@
 
     .balance {
         font-size: 5vh;
+        padding: 10px;
     }
 
     .income {
@@ -89,6 +90,7 @@
 
     .balance {
         font-size: 6vw;
+        padding: 10px;
     }
 
 
