@@ -66,10 +66,10 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<IncomeType> incomeTypes;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<BalanceHistory> balanceHistory;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
+    private List<BalanceHistory> balanceHistory = new ArrayList<>();
 
-    public void updateBalance(BigDecimal amount, LocalDate date) {
+    public void updateBalance(BigDecimal amount, LocalDate date, String name) {
         // Update the balance field
         this.balance = this.balance.add(amount);
 
@@ -78,10 +78,11 @@ public class User {
         balanceChange.setUser(this);
         balanceChange.setDateTime(date);
         balanceChange.setBalanceChange(amount);
+        balanceChange.setName(name);
 
-        if (this.balanceHistory == null) {
-            this.balanceHistory = new ArrayList<>();
-        }
+//        if (this.balanceHistory == null) {
+//            this.balanceHistory = new ArrayList<>();
+//        }
 
         this.balanceHistory.add(balanceChange);
     }

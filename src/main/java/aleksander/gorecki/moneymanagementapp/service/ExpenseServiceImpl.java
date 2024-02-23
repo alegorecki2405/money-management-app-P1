@@ -68,7 +68,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     @Override
     public Expense updateBalanceForExpense(User user, Expense expense) {
         if (expense.getDate().isBefore(LocalDate.now()) || expense.getDate().isEqual(LocalDate.now())) {
-            userService.updateUsersBalance(user, expense.getAmount().negate(), expense.getDate());
+            userService.updateUsersBalance(user, expense.getAmount().negate(), expense.getDate(), expense.getName());
             expense.setBalanceUpdated(true);
         }
         return expenseRepository.save(expense);

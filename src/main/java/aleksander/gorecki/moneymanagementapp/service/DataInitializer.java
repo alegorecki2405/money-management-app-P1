@@ -53,7 +53,7 @@ public class DataInitializer implements CommandLineRunner {
             user.setPassword(passwordEncoder.encode("Q"));
             user.setRoles(List.of(roleRepository.findByName("ROLE_USER")));
             user.setBalance(BigDecimal.valueOf(1000));
-            user.updateBalance(BigDecimal.ZERO, LocalDate.now().minusYears(1));
+            user.updateBalance(BigDecimal.ZERO, LocalDate.now().minusYears(1), "initial balance");
             User saved = userRepository.save(user);
             userService.defaultExpeneseTypes(saved);
             userService.defaultIncomeTypes(saved);

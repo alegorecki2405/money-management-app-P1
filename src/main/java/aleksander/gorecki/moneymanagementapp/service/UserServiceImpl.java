@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         user.setBalance(userDto.getBalance());
         user.setRoles(Collections.singletonList(roleRepository.findByName("ROLE_USER")));
-        user.updateBalance(BigDecimal.ZERO, LocalDate.now().minusYears(1));
+        user.updateBalance(BigDecimal.ZERO, LocalDate.now().minusYears(1), "initialBalance");
         return userRepository.save(user);
     }
 
@@ -77,10 +77,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateUsersBalance(User user, BigDecimal amount, LocalDate date) {
+    public void updateUsersBalance(User user, BigDecimal amount, LocalDate date, String name) {
         LocalDate firstBalanceDate = user.getBalanceHistory().get(0).getDateTime();
         if (!firstBalanceDate.isAfter(date)) {
-            user.updateBalance(amount, date);
+            user.updateBalance(amount, date, name);
             userRepository.save(user);
         }
     }

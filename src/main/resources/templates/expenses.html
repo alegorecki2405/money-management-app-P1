@@ -59,14 +59,15 @@
                     <th>Action</th>
                 </tr>
                 </thead>
-                <tbody>
+                <tbody class="small-table">
                 <tr th:each="expense : ${futureExpenses}">
                     <td th:text="${expense.name}"></td>
                     <td th:text="${expense.amount}"></td>
                     <td th:text="${expense.type}"></td>
                     <td th:text="${#temporals.format(expense.date, 'dd-MM-yyyy')}"></td>
                     <td>
-                        <button class="btn btn-primary" th:onclick="payExpense([[${expense.id}]])">Pay</button>
+                        <button class="btn btn-primary pay-button" th:onclick="payExpense([[${expense.id}]])">Pay
+                        </button>
                     </td>
                 </tr>
                 </tbody>
@@ -85,7 +86,7 @@
                     <th>Date</th>
                 </tr>
                 </thead>
-                <tbody>
+                <tbody class="small-table">
                 <tr th:each="expense : ${previousExpenses}">
                     <td th:text="${expense.name}"></td>
                     <td th:text="${expense.amount}"></td>

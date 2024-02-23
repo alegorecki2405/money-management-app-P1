@@ -1,5 +1,6 @@
 package aleksander.gorecki.moneymanagementapp.entity;
 
+import aleksander.gorecki.moneymanagementapp.dto.BalanceHistoryDto;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -30,4 +31,14 @@ public class BalanceHistory {
     private LocalDate dateTime;
 
     private BigDecimal balanceChange;
+
+    private String name;
+
+    public BalanceHistoryDto mapToDto() {
+        BalanceHistoryDto balanceHistoryDto = new BalanceHistoryDto();
+        balanceHistoryDto.setName(this.name);
+        balanceHistoryDto.setDateTime(this.dateTime);
+        balanceHistoryDto.setBalanceChange(this.balanceChange);
+        return balanceHistoryDto;
+    }
 }

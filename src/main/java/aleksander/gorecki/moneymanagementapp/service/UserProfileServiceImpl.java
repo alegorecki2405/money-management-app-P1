@@ -14,6 +14,7 @@ import java.time.YearMonth;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @Service
@@ -35,6 +36,8 @@ public class UserProfileServiceImpl implements UserProfileService {
             model.addAttribute("currentBalance", balance.toString());
             model.addAttribute("percentageChange", getPercentageDifference(balance, getChangeInThisMonth(user)).stripTrailingZeros());
             getAmountsAddedAndSubtractedPerPeriod(model, user);
+            //TODO: ogarnac
+            getLastOperations(user, model);
         }
     }
 
@@ -87,5 +90,14 @@ public class UserProfileServiceImpl implements UserProfileService {
         model.addAttribute("expenseLastWeek", getValueFromPeriod(expenses, LocalDate.now().minusDays(7), LocalDate.now()));
         model.addAttribute("expenseLastMonth", getValueFromPeriod(expenses, LocalDate.now().minusMonths(1), LocalDate.now()));
         model.addAttribute("expenseLastYear", getValueFromPeriod(expenses, LocalDate.now().minusYears(1), LocalDate.now()));
+    }
+
+    private void getLastOperations(User user, Model model) {
+        List<BalanceHistory> balanceHistories = user.getBalanceHistory();
+        if (balanceHistories.size() - 8 >= 0) {
+            balanceHistories = balanceHistories.subList(balanceHistories.size() - 8, balanceHistories.size());
+        }
+
+        model.addAttribute("lastOperations", balanceHistories.stream().map(BalanceHistory::mapToDto).collect(Collectors.toList()));
     }
 }
