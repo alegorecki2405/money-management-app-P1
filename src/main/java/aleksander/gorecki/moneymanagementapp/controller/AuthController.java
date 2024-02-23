@@ -24,6 +24,10 @@ public class AuthController {
     public String showRegistrationForm(Model model) {
         model.addAttribute("user", new UserDto());
         model.addAttribute("userRole", authenticationFacade.getHighestRole());
+        User user = userService.findUserByEmail(authenticationFacade.getAuth().getName());
+        if (user != null) {
+            model.addAttribute("userName", user.getName());
+        }
         return "register";
     }
 
@@ -49,6 +53,11 @@ public class AuthController {
     @GetMapping("/login")
     public String showLoginForm(Model model) {
         model.addAttribute("userRole", authenticationFacade.getHighestRole());
+        User user = userService.findUserByEmail(authenticationFacade.getAuth().getName());
+
+        if (user != null) {
+            model.addAttribute("userName", user.getName());
+        }
         return "login";
     }
 }

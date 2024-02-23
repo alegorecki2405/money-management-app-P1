@@ -110,6 +110,9 @@ public class ExpenseServiceImpl implements ExpenseService {
         model.addAttribute("futureExpenses", filterExpenses(findAllFutureExpensesByUser(user), typeFilter, maxAmount, minAmount, startDate, endDate, timePeriod));
         model.addAttribute("previousExpenses", filterExpenses(findAllPreviousExpensesByUser(user), typeFilter, maxAmount, minAmount, startDate, endDate, timePeriod));
         model.addAttribute("userRole", authenticationFacade.getHighestRole());
+        if (user != null) {
+            model.addAttribute("userName", user.getName());
+        }
         model.addAttribute("typeFilter", typeFilter);
         model.addAttribute("maxAmount", maxAmount);
         model.addAttribute("minAmount", minAmount);

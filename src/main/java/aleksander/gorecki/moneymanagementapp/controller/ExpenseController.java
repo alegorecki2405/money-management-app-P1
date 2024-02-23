@@ -37,6 +37,9 @@ public class ExpenseController {
         User user = userService.findUserByEmail(authenticationFacade.getAuth().getName());
         model.addAttribute("expense", new ExpenseDto());
         model.addAttribute("userRole", authenticationFacade.getHighestRole());
+        if (user != null) {
+            model.addAttribute("userName", user.getName());
+        }
         model.addAttribute("expenseTypes", expenseService.findAllTypesByUser(user));
         return "expense";
     }
@@ -48,6 +51,10 @@ public class ExpenseController {
                                 Model model) {
         if (result.hasErrors()) {
             model.addAttribute("userRole", authenticationFacade.getHighestRole());
+            User user = userService.findUserByEmail(authenticationFacade.getAuth().getName());
+            if (user != null) {
+                model.addAttribute("userName", user.getName());
+            }
             return "expense";
         }
 

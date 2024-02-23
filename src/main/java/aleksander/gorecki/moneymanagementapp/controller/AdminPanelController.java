@@ -4,6 +4,7 @@ import aleksander.gorecki.moneymanagementapp.config.AuthenticationFacade;
 import aleksander.gorecki.moneymanagementapp.dto.UserDto;
 import aleksander.gorecki.moneymanagementapp.entity.User;
 import aleksander.gorecki.moneymanagementapp.service.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,8 +12,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.http.HttpStatus;
-
 
 import java.util.List;
 
@@ -29,15 +28,19 @@ public class AdminPanelController {
     }
 
     @GetMapping("/users")
-    public String getAllUsers(Model model){
+    public String getAllUsers(Model model) {
         List<UserDto> users = userService.findAllUsers();
         model.addAttribute("users", users);
         model.addAttribute("userRole", authenticationFacade.getHighestRole());
+        User user = userService.findUserByEmail(authenticationFacade.getAuth().getName());
+        if (user != null) {
+            model.addAttribute("userName", user.getName());
+        }
         return "users";
     }
 
     @DeleteMapping("/delete/{userEmail}")
-    public ResponseEntity<String> deleteUser(@PathVariable String userEmail){
+    public ResponseEntity<String> deleteUser(@PathVariable String userEmail) {
         try {
             User user = userService.findUserByEmail(userEmail);
             if (user != null) {

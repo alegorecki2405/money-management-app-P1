@@ -39,6 +39,7 @@ public class UserProfileServiceImpl implements UserProfileService {
             model.addAttribute("percentageChange", getPercentageDifference(balance, getChangeInThisMonth(user)).stripTrailingZeros());
             getAmountsAddedAndSubtractedPerPeriod(model, user);
             getLastOperations(user, model);
+            model.addAttribute("userName", user.getName());
         }
     }
 

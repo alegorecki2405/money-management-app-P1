@@ -38,6 +38,9 @@ public class IncomeController {
         User user = userService.findUserByEmail(authenticationFacade.getAuth().getName());
         model.addAttribute("income", new IncomeDto());
         model.addAttribute("userRole", authenticationFacade.getHighestRole());
+        if (user != null) {
+            model.addAttribute("userName", user.getName());
+        }
         model.addAttribute("incomeTypes", incomeService.findAllTypesByUser(user));
         return "income";
     }
@@ -49,6 +52,10 @@ public class IncomeController {
                                Model model) {
         if (result.hasErrors()) {
             model.addAttribute("userRole", authenticationFacade.getHighestRole());
+            User user = userService.findUserByEmail(authenticationFacade.getAuth().getName());
+            if (user != null) {
+                model.addAttribute("userName", user.getName());
+            }
             return "income";
         }
 

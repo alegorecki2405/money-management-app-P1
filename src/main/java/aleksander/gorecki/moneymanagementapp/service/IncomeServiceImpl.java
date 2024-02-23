@@ -109,6 +109,9 @@ public class IncomeServiceImpl implements IncomeService {
         model.addAttribute("futureIncomes", filterIncomes(findAllFutureIncomesByUser(user), typeFilter, maxAmount, minAmount, startDate, endDate, timePeriod));
         model.addAttribute("previousIncomes", filterIncomes(findAllPreviousIncomesByUser(user), typeFilter, maxAmount, minAmount, startDate, endDate, timePeriod));
         model.addAttribute("userRole", authenticationFacade.getHighestRole());
+        if (user != null) {
+            model.addAttribute("userName", user.getName());
+        }
         model.addAttribute("typeFilter", typeFilter);
         model.addAttribute("maxAmount", maxAmount);
         model.addAttribute("minAmount", minAmount);
