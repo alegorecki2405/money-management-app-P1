@@ -46,29 +46,29 @@
                     <h3 class="title-of-element">Current balance</h3>
                 </div>
                 <div class="d-flex col-md-12 justify-content-center">
-                    <div th:if="${percentageChange < 0}">
+                    <div th:if="${thisMonthChange < 0}">
                         <h1 class="balance">
                             <span th:text="${currentBalance}"></span>
                             zł
                         </h1>
                         <h3>
                             <span style="color: red">&#8595;</span>
-                            <span id="balanceDisplayNegative" th:text="${percentageChange}"></span>
-                            <span style="color: red">% </span>
+                            <span id="balanceDisplayNegative" th:text="${thisMonthChange}"></span>
+                            <span style="color: red">zł </span>
                         </h3>
                     </div>
-                    <div th:if="${percentageChange > 0}">
+                    <div th:if="${thisMonthChange > 0}">
                         <h1 class="balance">
                             <span th:text="${currentBalance}"></span>
                             zł
                         </h1>
                         <h3>
                             <span style="color: forestgreen">&#8593;</span>
-                            <span id="balanceDisplayPositive" th:text="${percentageChange}"></span>
-                            <span style="color: forestgreen">% </span>
+                            <span id="balanceDisplayPositive" th:text="${thisMonthChange}"></span>
+                            <span style="color: forestgreen">zł </span>
                         </h3>
                     </div>
-                    <h1 class="balance" th:if="${percentageChange == 0}"><span th:text="${currentBalance}"></span></h1>
+                    <h1 class="balance" th:if="${thisMonthChange == 0}"><span th:text="${currentBalance}"></span></h1>
                 </div>
             </div>
         </div>

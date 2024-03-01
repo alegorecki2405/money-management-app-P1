@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
@@ -36,7 +35,7 @@ public class UserProfileServiceImpl implements UserProfileService {
             model.addAttribute("firstDiagram", balancesPerMonth);
             BigDecimal balance = user.getBalance();
             model.addAttribute("currentBalance", balance.toString());
-            model.addAttribute("percentageChange", getPercentageDifference(balance, getChangeInThisMonth(user)).stripTrailingZeros());
+            model.addAttribute("thisMonthChange", getChangeInThisMonth(user));
             getAmountsAddedAndSubtractedPerPeriod(model, user);
             getLastOperations(user, model);
             model.addAttribute("userName", user.getName());
@@ -74,11 +73,6 @@ public class UserProfileServiceImpl implements UserProfileService {
         List<BalanceHistory> balanceHistories = user.getBalanceHistory();
         YearMonth month = YearMonth.now();
         return getValueFromPeriod(balanceHistories, month.atDay(1), month.atEndOfMonth());
-    }
-
-    private BigDecimal getPercentageDifference(BigDecimal current, BigDecimal change) {
-        BigDecimal previous = current.subtract(change);
-        return current.subtract(previous).divide(previous, 4, RoundingMode.CEILING).multiply(BigDecimal.valueOf(100));
     }
 
     private void getAmountsAddedAndSubtractedPerPeriod(Model model, User user) {
